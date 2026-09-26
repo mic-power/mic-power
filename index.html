@@ -1,0 +1,4689 @@
+```html
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>MIC POWER</title>
+
+<script src="https://unpkg.com/@supabase/supabase-js@2"></script>
+
+<style>
+
+*{
+    box-sizing:border-box;
+    margin:0;
+    padding:0;
+}
+
+body{
+    font-family:Arial,Helvetica,sans-serif;
+    background:#0b0f19;
+    color:#fff;
+    min-height:100vh;
+}
+
+button,
+input,
+select,
+textarea{
+    font:inherit;
+}
+
+button{
+    cursor:pointer;
+}
+
+.hidden{
+    display:none!important;
+}
+
+.app{
+    min-height:100vh;
+}
+
+.topbar{
+    height:70px;
+    background:#111827;
+    border-bottom:1px solid #263044;
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    padding:0 25px;
+    position:sticky;
+    top:0;
+    z-index:100;
+}
+
+.logo{
+    font-size:25px;
+    font-weight:900;
+    letter-spacing:1px;
+}
+
+.logo span{
+    color:#22c55e;
+}
+
+.user-area{
+    display:flex;
+    align-items:center;
+    gap:15px;
+}
+
+.email-small{
+    color:#9ca3af;
+    font-size:13px;
+}
+
+.logout-btn{
+    background:#ef4444;
+    color:#fff;
+    border:0;
+    padding:9px 15px;
+    border-radius:7px;
+}
+
+.layout{
+    display:flex;
+    min-height:calc(100vh - 70px);
+}
+
+.sidebar{
+    width:240px;
+    background:#111827;
+    border-right:1px solid #263044;
+    padding:20px 12px;
+}
+
+.nav-btn{
+    width:100%;
+    text-align:left;
+    border:0;
+    background:transparent;
+    color:#cbd5e1;
+    padding:13px 15px;
+    border-radius:8px;
+    margin-bottom:5px;
+}
+
+.nav-btn:hover,
+.nav-btn.active{
+    background:#1f2937;
+    color:#22c55e;
+}
+
+.main{
+    flex:1;
+    padding:30px;
+    max-width:1600px;
+}
+
+.page-title{
+    font-size:30px;
+    margin-bottom:8px;
+}
+
+.page-subtitle{
+    color:#94a3b8;
+    margin-bottom:25px;
+}
+
+.cards{
+    display:grid;
+    grid-template-columns:repeat(4,1fr);
+    gap:18px;
+    margin-bottom:25px;
+}
+
+.card{
+    background:#111827;
+    border:1px solid #263044;
+    border-radius:12px;
+    padding:20px;
+}
+
+.card h2{
+    margin-bottom:12px;
+}
+
+.stat-title{
+    color:#94a3b8;
+    font-size:13px;
+    margin-bottom:10px;
+}
+
+.stat-value{
+    font-size:30px;
+    font-weight:800;
+}
+
+.section{
+    background:#111827;
+    border:1px solid #263044;
+    border-radius:12px;
+    padding:22px;
+    margin-bottom:22px;
+}
+
+.section h2{
+    font-size:20px;
+    margin-bottom:18px;
+}
+
+.form-grid{
+    display:grid;
+    grid-template-columns:repeat(2,1fr);
+    gap:15px;
+}
+
+.field{
+    display:flex;
+    flex-direction:column;
+    gap:7px;
+}
+
+.field.full{
+    grid-column:1/-1;
+}
+
+label{
+    color:#cbd5e1;
+    font-size:14px;
+}
+
+input,
+select,
+textarea{
+    width:100%;
+    background:#0b1220;
+    color:#fff;
+    border:1px solid #334155;
+    border-radius:7px;
+    padding:11px;
+    outline:none;
+}
+
+input:focus,
+select:focus,
+textarea:focus{
+    border-color:#22c55e;
+}
+
+textarea{
+    min-height:100px;
+    resize:vertical;
+}
+
+.primary{
+    background:#22c55e;
+    color:#06120a;
+    border:0;
+    border-radius:7px;
+    padding:11px 17px;
+    font-weight:800;
+}
+
+.secondary{
+    background:#334155;
+    color:#fff;
+    border:0;
+    border-radius:7px;
+    padding:11px 17px;
+}
+
+.danger{
+    background:#ef4444;
+    color:#fff;
+    border:0;
+    border-radius:7px;
+    padding:11px 17px;
+}
+
+.warning{
+    background:#f59e0b;
+    color:#111827;
+    border:0;
+    border-radius:7px;
+    padding:11px 17px;
+    font-weight:700;
+}
+
+.message{
+    background:#12351f;
+    color:#86efac;
+    border:1px solid #166534;
+    padding:12px;
+    border-radius:7px;
+    margin-top:15px;
+}
+
+.danger-box{
+    background:#3a1515;
+    color:#fca5a5;
+    border:1px solid #7f1d1d;
+    padding:12px;
+    border-radius:7px;
+    margin-top:15px;
+}
+
+.info-box{
+    background:#172554;
+    color:#bfdbfe;
+    border:1px solid #1d4ed8;
+    padding:12px;
+    border-radius:7px;
+    margin-bottom:15px;
+}
+
+.success-box{
+    background:#12351f;
+    color:#86efac;
+    border:1px solid #166534;
+    padding:12px;
+    border-radius:7px;
+    margin-top:15px;
+}
+
+.release{
+    border:1px solid #263044;
+    border-radius:10px;
+    padding:18px;
+    margin-bottom:15px;
+}
+
+.release-head{
+    display:flex;
+    justify-content:space-between;
+    gap:15px;
+    align-items:flex-start;
+}
+
+.release-title{
+    font-size:20px;
+    font-weight:800;
+}
+
+.meta{
+    color:#94a3b8;
+    font-size:13px;
+    margin-top:5px;
+}
+
+.badge{
+    display:inline-block;
+    padding:5px 9px;
+    border-radius:20px;
+    font-size:12px;
+    font-weight:700;
+}
+
+.badge.approved{
+    background:#14532d;
+    color:#86efac;
+}
+
+.badge.pending{
+    background:#713f12;
+    color:#fde68a;
+}
+
+.badge.rejected{
+    background:#7f1d1d;
+    color:#fecaca;
+}
+
+.badge.processing{
+    background:#1e3a8a;
+    color:#bfdbfe;
+}
+
+.badge.delivered{
+    background:#065f46;
+    color:#a7f3d0;
+}
+
+.store-grid{
+    display:grid;
+    grid-template-columns:repeat(4,1fr);
+    gap:8px;
+    margin:15px 0;
+}
+
+.store-item{
+    background:#0b1220;
+    border:1px solid #263044;
+    padding:10px;
+    border-radius:7px;
+}
+
+.store-item label{
+    display:flex;
+    gap:7px;
+    align-items:center;
+    cursor:pointer;
+}
+
+.store-item input{
+    width:auto;
+}
+
+.release-actions{
+    display:flex;
+    gap:8px;
+    flex-wrap:wrap;
+}
+
+.table-wrap{
+    overflow-x:auto;
+}
+
+table{
+    width:100%;
+    border-collapse:collapse;
+}
+
+th,
+td{
+    padding:12px;
+    border-bottom:1px solid #263044;
+    text-align:left;
+    font-size:14px;
+}
+
+th{
+    color:#94a3b8;
+}
+
+.auth-screen{
+    min-height:100vh;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    padding:20px;
+    background:
+        radial-gradient(
+            circle at top,
+            #12351f 0,
+            #0b0f19 40%
+        );
+}
+
+.auth-box{
+    width:430px;
+    max-width:100%;
+    background:#111827;
+    border:1px solid #263044;
+    border-radius:15px;
+    padding:30px;
+}
+
+.auth-logo{
+    text-align:center;
+    font-size:34px;
+    font-weight:900;
+    margin-bottom:8px;
+}
+
+.auth-logo span{
+    color:#22c55e;
+}
+
+.auth-description{
+    text-align:center;
+    color:#94a3b8;
+    margin-bottom:25px;
+}
+
+.auth-tabs{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    margin-bottom:20px;
+}
+
+.auth-tab{
+    padding:11px;
+    background:#1f2937;
+    color:#cbd5e1;
+    border:0;
+}
+
+.auth-tab.active{
+    background:#22c55e;
+    color:#06120a;
+    font-weight:800;
+}
+
+.auth-form{
+    display:flex;
+    flex-direction:column;
+    gap:13px;
+}
+
+.auth-form button{
+    margin-top:5px;
+}
+
+.small-note{
+    color:#64748b;
+    font-size:12px;
+    margin-top:15px;
+    line-height:1.5;
+}
+
+.empty{
+    text-align:center;
+    padding:35px;
+    color:#64748b;
+}
+
+.payment-card{
+    border:1px solid #263044;
+    border-radius:10px;
+    padding:17px;
+    margin-bottom:12px;
+}
+
+.payment-head{
+    display:flex;
+    justify-content:space-between;
+    gap:10px;
+}
+
+.payment-status{
+    font-weight:800;
+}
+
+.admin-label{
+    color:#22c55e;
+    font-size:12px;
+    font-weight:800;
+}
+
+.checkout-box{
+    background:#0b1220;
+    border:1px solid #334155;
+    border-radius:10px;
+    padding:18px;
+    margin-top:15px;
+}
+
+.checkout-title{
+    font-size:18px;
+    font-weight:800;
+    margin-bottom:10px;
+}
+
+.checkout-reference{
+    background:#111827;
+    border:1px dashed #475569;
+    padding:10px;
+    border-radius:7px;
+    margin-top:10px;
+    word-break:break-all;
+}
+
+@media(max-width:1000px){
+
+    .cards{
+        grid-template-columns:repeat(2,1fr);
+    }
+
+    .store-grid{
+        grid-template-columns:repeat(2,1fr);
+    }
+
+    .sidebar{
+        width:200px;
+    }
+}
+
+@media(max-width:700px){
+
+    .layout{
+        flex-direction:column;
+    }
+
+    .sidebar{
+        width:100%;
+        border-right:0;
+        border-bottom:1px solid #263044;
+        display:flex;
+        overflow-x:auto;
+    }
+
+    .nav-btn{
+        min-width:130px;
+    }
+
+    .main{
+        padding:18px;
+    }
+
+    .cards{
+        grid-template-columns:1fr;
+    }
+
+    .form-grid{
+        grid-template-columns:1fr;
+    }
+
+    .store-grid{
+        grid-template-columns:1fr;
+    }
+
+    .email-small{
+        display:none;
+    }
+
+    .topbar{
+        padding:0 15px;
+    }
+}
+
+</style>
+</head>
+
+<body>
+
+<div id="authScreen" class="auth-screen">
+
+    <div class="auth-box">
+
+        <div class="auth-logo">
+            MIC <span>POWER</span>
+        </div>
+
+        <div class="auth-description">
+            Music Distribution Platform
+        </div>
+
+        <div class="auth-tabs">
+
+            <button
+                id="loginTab"
+                class="auth-tab active"
+            >
+                Login
+            </button>
+
+            <button
+                id="registerTab"
+                class="auth-tab"
+            >
+                Register
+            </button>
+
+        </div>
+
+        <form
+            id="loginForm"
+            class="auth-form"
+        >
+
+            <div class="field">
+
+                <label>Email</label>
+
+                <input
+                    id="loginEmail"
+                    type="email"
+                    required
+                >
+
+            </div>
+
+            <div class="field">
+
+                <label>Password</label>
+
+                <input
+                    id="loginPassword"
+                    type="password"
+                    required
+                >
+
+            </div>
+
+            <button
+                class="primary"
+                type="submit"
+            >
+                Login
+            </button>
+
+        </form>
+
+        <form
+            id="registerForm"
+            class="auth-form hidden"
+        >
+
+            <div class="field">
+
+                <label>Artist Name</label>
+
+                <input
+                    id="registerArtistName"
+                    type="text"
+                    required
+                >
+
+            </div>
+
+            <div class="field">
+
+                <label>Email</label>
+
+                <input
+                    id="registerEmail"
+                    type="email"
+                    required
+                >
+
+            </div>
+
+            <div class="field">
+
+                <label>Password</label>
+
+                <input
+                    id="registerPassword"
+                    type="password"
+                    minlength="6"
+                    required
+                >
+
+            </div>
+
+            <button
+                class="primary"
+                type="submit"
+            >
+                Create Artist Account
+            </button>
+
+        </form>
+
+        <div id="authMessage"></div>
+
+        <div class="small-note">
+
+            First 3 successful distribution requests are free.
+            Payment is required from distribution #4 onward.
+
+        </div>
+
+    </div>
+
+</div>
+
+<div
+    id="app"
+    class="app hidden"
+>
+
+    <header class="topbar">
+
+        <div class="logo">
+            MIC <span>POWER</span>
+        </div>
+
+        <div class="user-area">
+
+            <div
+                id="adminLabel"
+                class="admin-label hidden"
+            >
+                ADMIN
+            </div>
+
+            <div
+                id="userEmail"
+                class="email-small"
+            ></div>
+
+            <button
+                id="logoutBtn"
+                class="logout-btn"
+            >
+                Logout
+            </button>
+
+        </div>
+
+    </header>
+
+    <div class="layout">
+
+        <aside class="sidebar">
+
+            <button
+                class="nav-btn active"
+                data-page="dashboard"
+            >
+                Dashboard
+            </button>
+
+            <button
+                class="nav-btn"
+                data-page="releases"
+            >
+                My Releases
+            </button>
+
+            <button
+                class="nav-btn"
+                data-page="newRelease"
+            >
+                New Release
+            </button>
+
+            <button
+                class="nav-btn"
+                data-page="payments"
+            >
+                Payments
+            </button>
+
+            <button
+                class="nav-btn"
+                data-page="plans"
+            >
+                Plans
+            </button>
+
+            <button
+                id="adminNav"
+                class="nav-btn hidden"
+                data-page="admin"
+            >
+                Admin
+            </button>
+
+        </aside>
+
+        <main class="main">
+
+            <section
+                id="page-dashboard"
+                class="page"
+            >
+
+                <h1 class="page-title">
+                    Dashboard
+                </h1>
+
+                <p class="page-subtitle">
+                    Welcome to MIC POWER.
+                </p>
+
+                <div class="cards">
+
+                    <div class="card">
+
+                        <div class="stat-title">
+                            My Releases
+                        </div>
+
+                        <div
+                            id="statReleases"
+                            class="stat-value"
+                        >
+                            0
+                        </div>
+
+                    </div>
+
+                    <div class="card">
+
+                        <div class="stat-title">
+                            Free Distributions Used
+                        </div>
+
+                        <div
+                            id="statFreeUsed"
+                            class="stat-value"
+                        >
+                            0 / 3
+                        </div>
+
+                    </div>
+
+                    <div class="card">
+
+                        <div class="stat-title">
+                            Paid Distributions
+                        </div>
+
+                        <div
+                            id="statPaid"
+                            class="stat-value"
+                        >
+                            0
+                        </div>
+
+                    </div>
+
+                    <div class="card">
+
+                        <div class="stat-title">
+                            Queue
+                        </div>
+
+                        <div
+                            id="statQueue"
+                            class="stat-value"
+                        >
+                            0
+                        </div>
+
+                    </div>
+
+                </div>
+
+                <div class="section">
+
+                    <h2>
+                        Distribution Access
+                    </h2>
+
+                    <div
+                        id="distributionAccessBox"
+                    ></div>
+
+                </div>
+
+                <div class="section">
+
+                    <h2>
+                        Recent Releases
+                    </h2>
+
+                    <div
+                        id="dashboardReleases"
+                    ></div>
+
+                </div>
+
+            </section>
+
+            <section
+                id="page-releases"
+                class="page hidden"
+            >
+
+                <h1 class="page-title">
+                    My Releases
+                </h1>
+
+                <p class="page-subtitle">
+                    Manage your music releases and distribution.
+                </p>
+
+                <div id="releasesList"></div>
+
+            </section>
+
+            <section
+                id="page-newRelease"
+                class="page hidden"
+            >
+
+                <h1 class="page-title">
+                    New Release
+                </h1>
+
+                <p class="page-subtitle">
+                    Submit your music to MIC POWER.
+                </p>
+
+                <div class="section">
+
+                    <form id="releaseForm">
+
+                        <div class="form-grid">
+
+                            <div class="field">
+
+                                <label>
+                                    Artist Name
+                                </label>
+
+                                <input
+                                    id="releaseArtist"
+                                    type="text"
+                                    required
+                                >
+
+                            </div>
+
+                            <div class="field">
+
+                                <label>
+                                    Release Title
+                                </label>
+
+                                <input
+                                    id="releaseTitle"
+                                    type="text"
+                                    required
+                                >
+
+                            </div>
+
+                            <div class="field">
+
+                                <label>
+                                    Genre
+                                </label>
+
+                                <input
+                                    id="releaseGenre"
+                                    type="text"
+                                    placeholder="Bongo Flava"
+                                >
+
+                            </div>
+
+                            <div class="field">
+
+                                <label>
+                                    Language
+                                </label>
+
+                                <input
+                                    id="releaseLanguage"
+                                    type="text"
+                                    placeholder="Swahili"
+                                >
+
+                            </div>
+
+                            <div class="field">
+
+                                <label>
+                                    Release Date
+                                </label>
+
+                                <input
+                                    id="releaseDate"
+                                    type="date"
+                                >
+
+                            </div>
+
+                            <div class="field">
+
+                                <label>
+                                    UPC / Barcode
+                                </label>
+
+                                <input
+                                    id="releaseUPC"
+                                    type="text"
+                                >
+
+                            </div>
+
+                            <div class="field full">
+
+                                <label>
+                                    Cover Artwork URL
+                                </label>
+
+                                <input
+                                    id="releaseCover"
+                                    type="url"
+                                >
+
+                            </div>
+
+                            <div class="field full">
+
+                                <label>
+                                    Audio File
+                                </label>
+
+                                <input
+                                    id="releaseAudio"
+                                    type="file"
+                                    accept="audio/*"
+                                    required
+                                >
+
+                            </div>
+
+                            <div class="field full">
+
+                                <label>
+                                    Description / Notes
+                                </label>
+
+                                <textarea
+                                    id="releaseDescription"
+                                ></textarea>
+
+                            </div>
+
+                        </div>
+
+                        <br>
+
+                        <button
+                            class="primary"
+                            type="submit"
+                        >
+                            Submit Release
+                        </button>
+
+                        <div
+                            id="releaseMessage"
+                        ></div>
+
+                    </form>
+
+                </div>
+
+            </section>
+
+            <section
+                id="page-payments"
+                class="page hidden"
+            >
+
+                <h1 class="page-title">
+                    Payments
+                </h1>
+
+                <p class="page-subtitle">
+                    Subscription payment records.
+                </p>
+
+                <div
+                    id="paymentsList"
+                ></div>
+
+            </section>
+
+            <section
+                id="page-plans"
+                class="page hidden"
+            >
+
+                <h1 class="page-title">
+                    Subscription Plans
+                </h1>
+
+                <p class="page-subtitle">
+                    Choose an annual plan to distribute your music.
+                </p>
+
+                <div class="cards">
+
+                    <div class="card">
+
+                        <h2>
+                            Starter
+                        </h2>
+
+                        <p class="stat-value">
+                            $10 / year
+                        </p>
+
+                        <p>
+                            Up to 10 songs
+                        </p>
+
+                        <br>
+
+                        <button
+                            class="primary"
+                            onclick="selectPlan('STARTER')"
+                        >
+                            Choose Starter
+                        </button>
+
+                    </div>
+
+                    <div class="card">
+
+                        <h2>
+                            Growth
+                        </h2>
+
+                        <p class="stat-value">
+                            $60 / year
+                        </p>
+
+                        <p>
+                            Up to 35 songs
+                        </p>
+
+                        <p>
+                            Manage up to 2 additional artists
+                        </p>
+
+                        <br>
+
+                        <button
+                            class="primary"
+                            onclick="selectPlan('GROWTH')"
+                        >
+                            Choose Growth
+                        </button>
+
+                    </div>
+
+                    <div class="card">
+
+                        <h2>
+                            Label
+                        </h2>
+
+                        <p class="stat-value">
+                            $130 / year
+                        </p>
+
+                        <p>
+                            Unlimited distributions
+                        </p>
+
+                        <p>
+                            Manage your label and artists
+                        </p>
+
+                        <br>
+
+                        <button
+                            class="primary"
+                            onclick="selectPlan('LABEL')"
+                        >
+                            Choose Label
+                        </button>
+
+                    </div>
+
+                </div>
+
+                <div
+                    id="planMessage"
+                    style="margin-top:20px"
+                ></div>
+
+            </section>
+
+            <section
+                id="page-admin"
+                class="page hidden"
+            >
+
+                <h1 class="page-title">
+                    Admin Dashboard
+                </h1>
+
+                <p class="page-subtitle">
+                    Manage releases, payments and distribution queue.
+                </p>
+
+                <div class="cards">
+
+                    <div class="card">
+
+                        <div class="stat-title">
+                            All Releases
+                        </div>
+
+                        <div
+                            id="adminReleaseCount"
+                            class="stat-value"
+                        >
+                            0
+                        </div>
+
+                    </div>
+
+                    <div class="card">
+
+                        <div class="stat-title">
+                            Submitted
+                        </div>
+
+                        <div
+                            id="adminSubmittedCount"
+                            class="stat-value"
+                        >
+                            0
+                        </div>
+
+                    </div>
+
+                    <div class="card">
+
+                        <div class="stat-title">
+                            Approved
+                        </div>
+
+                        <div
+                            id="adminApprovedCount"
+                            class="stat-value"
+                        >
+                            0
+                        </div>
+
+                    </div>
+
+                    <div class="card">
+
+                        <div class="stat-title">
+                            Pending Payments
+                        </div>
+
+                        <div
+                            id="adminPaymentCount"
+                            class="stat-value"
+                        >
+                            0
+                        </div>
+
+                    </div>
+
+                </div>
+
+                <div class="section">
+
+                    <h2>
+                        Releases
+                    </h2>
+
+                    <div
+                        id="adminReleases"
+                    ></div>
+
+                </div>
+
+                <div class="section">
+
+                    <h2>
+                        Payments
+                    </h2>
+
+                    <div
+                        id="adminPayments"
+                    ></div>
+
+                </div>
+
+                <div class="section">
+
+                    <h2>
+                        Distribution Queue
+                    </h2>
+
+                    <div
+                        id="adminQueue"
+                    ></div>
+
+                </div>
+
+            </section>
+
+        </main>
+
+    </div>
+
+</div>
+
+<script>
+
+/* ============================================================
+   MIC POWER CONFIGURATION
+============================================================ */
+
+const SUPABASE_URL =
+    "https://mzfmdorxrwaerehzyunq.supabase.co";
+
+const SUPABASE_ANON_KEY =
+    "sb_publishable_OqE0Ang9KUs9-ky_PtWhow_KLdbvWD6";
+
+const ADMIN_EMAIL =
+    "jmichaelshila@gmail.com";
+
+
+const STORES = [
+
+    "Spotify",
+    "Apple Music",
+    "iTunes",
+    "Amazon Music",
+    "YouTube Music",
+    "TikTok",
+    "Instagram",
+    "Facebook",
+    "Deezer",
+    "Tidal",
+    "Boomplay",
+    "Audiomack",
+    "Pandora",
+    "Anghami",
+    "SoundCloud",
+    "JioSaavn",
+    "Snapchat"
+
+];
+
+
+const supabaseClient =
+    window.supabase.createClient(
+        SUPABASE_URL,
+        SUPABASE_ANON_KEY
+    );
+
+
+let currentUser = null;
+let currentSession = null;
+let currentPage = "dashboard";
+
+let releasesCache = [];
+let paymentsCache = [];
+let queueCache = [];
+
+
+/* ============================================================
+   HELPERS
+============================================================ */
+
+function isAdmin(){
+
+    if(!currentUser){
+        return false;
+    }
+
+    return (
+        currentUser.email &&
+        currentUser.email.toLowerCase() ===
+        ADMIN_EMAIL.toLowerCase()
+    );
+
+}
+
+
+function escapeHTML(value){
+
+    if(
+        value === null ||
+        value === undefined
+    ){
+        return "";
+    }
+
+    return String(value)
+        .replaceAll("&","&amp;")
+        .replaceAll("<","&lt;")
+        .replaceAll(">","&gt;")
+        .replaceAll('"',"&quot;")
+        .replaceAll("'","&#039;");
+
+}
+
+
+function formatDate(value){
+
+    if(!value){
+        return "-";
+    }
+
+    try{
+
+        return new Date(value)
+            .toLocaleString();
+
+    }catch(error){
+
+        return value;
+
+    }
+
+}
+
+
+function showAuthMessage(
+    message,
+    isError=false
+){
+
+    const box =
+        document.getElementById(
+            "authMessage"
+        );
+
+    box.className =
+        isError
+        ? "danger-box"
+        : "message";
+
+    box.textContent =
+        message;
+
+}
+
+
+function showPage(page){
+
+    currentPage = page;
+
+    document
+        .querySelectorAll(".page")
+        .forEach(function(section){
+
+            section.classList.add(
+                "hidden"
+            );
+
+        });
+
+    const selected =
+        document.getElementById(
+            "page-" + page
+        );
+
+    if(selected){
+
+        selected.classList.remove(
+            "hidden"
+        );
+
+    }
+
+    document
+        .querySelectorAll(".nav-btn")
+        .forEach(function(button){
+
+            button.classList.remove(
+                "active"
+            );
+
+            if(
+                button.dataset.page ===
+                page
+            ){
+
+                button.classList.add(
+                    "active"
+                );
+
+            }
+
+        });
+
+    if(page === "dashboard"){
+        loadDashboard();
+    }
+
+    if(page === "releases"){
+        loadReleases();
+    }
+
+    if(page === "payments"){
+        loadPayments();
+    }
+
+    if(page === "plans"){
+        loadPayments();
+    }
+
+    if(page === "admin"){
+
+        if(isAdmin()){
+            loadAdminData();
+        }
+
+    }
+
+    if(page === "newRelease"){
+        prepareReleaseForm();
+    }
+
+}
+
+
+/* ============================================================
+   AUTH
+============================================================ */
+
+document
+    .getElementById("loginTab")
+    .addEventListener(
+        "click",
+        function(){
+
+            document
+                .getElementById("loginTab")
+                .classList.add("active");
+
+            document
+                .getElementById("registerTab")
+                .classList.remove("active");
+
+            document
+                .getElementById("loginForm")
+                .classList.remove("hidden");
+
+            document
+                .getElementById("registerForm")
+                .classList.add("hidden");
+
+            document
+                .getElementById("authMessage")
+                .innerHTML = "";
+
+        }
+    );
+
+
+document
+    .getElementById("registerTab")
+    .addEventListener(
+        "click",
+        function(){
+
+            document
+                .getElementById("registerTab")
+                .classList.add("active");
+
+            document
+                .getElementById("loginTab")
+                .classList.remove("active");
+
+            document
+                .getElementById("registerForm")
+                .classList.remove("hidden");
+
+            document
+                .getElementById("loginForm")
+                .classList.add("hidden");
+
+            document
+                .getElementById("authMessage")
+                .innerHTML = "";
+
+        }
+    );
+
+
+document
+    .getElementById("loginForm")
+    .addEventListener(
+        "submit",
+        async function(event){
+
+            event.preventDefault();
+
+            const email =
+                document
+                    .getElementById(
+                        "loginEmail"
+                    )
+                    .value
+                    .trim();
+
+            const password =
+                document
+                    .getElementById(
+                        "loginPassword"
+                    )
+                    .value;
+
+            showAuthMessage(
+                "Logging in..."
+            );
+
+            try{
+
+                const result =
+                    await supabaseClient
+                        .auth
+                        .signInWithPassword({
+
+                            email:
+                                email,
+
+                            password:
+                                password
+
+                        });
+
+                if(result.error){
+
+                    console.error(
+                        result.error
+                    );
+
+                    showAuthMessage(
+                        result.error.message,
+                        true
+                    );
+
+                    return;
+
+                }
+
+                showAuthMessage(
+                    "Login successful."
+                );
+
+            }catch(error){
+
+                console.error(
+                    error
+                );
+
+                showAuthMessage(
+                    error.message,
+                    true
+                );
+
+            }
+
+        }
+    );
+
+
+document
+    .getElementById("registerForm")
+    .addEventListener(
+        "submit",
+        async function(event){
+
+            event.preventDefault();
+
+            const artistName =
+                document
+                    .getElementById(
+                        "registerArtistName"
+                    )
+                    .value
+                    .trim();
+
+            const email =
+                document
+                    .getElementById(
+                        "registerEmail"
+                    )
+                    .value
+                    .trim();
+
+            const password =
+                document
+                    .getElementById(
+                        "registerPassword"
+                    )
+                    .value;
+
+            showAuthMessage(
+                "Creating account..."
+            );
+
+            try{
+
+                const result =
+                    await supabaseClient
+                        .auth
+                        .signUp({
+
+                            email:
+                                email,
+
+                            password:
+                                password,
+
+                            options:{
+                                data:{
+                                    artist_name:
+                                        artistName
+                                }
+                            }
+
+                        });
+
+                if(result.error){
+
+                    console.error(
+                        result.error
+                    );
+
+                    showAuthMessage(
+                        result.error.message,
+                        true
+                    );
+
+                    return;
+
+                }
+
+                if(result.data.session){
+
+                    showAuthMessage(
+                        "Account created successfully."
+                    );
+
+                }else{
+
+                    showAuthMessage(
+                        "Account created. Check your email if email confirmation is enabled."
+                    );
+
+                }
+
+            }catch(error){
+
+                console.error(
+                    error
+                );
+
+                showAuthMessage(
+                    error.message,
+                    true
+                );
+
+            }
+
+        }
+    );
+
+
+document
+    .getElementById("logoutBtn")
+    .addEventListener(
+        "click",
+        async function(){
+
+            await supabaseClient
+                .auth
+                .signOut();
+
+        }
+    );
+
+
+supabaseClient
+    .auth
+    .onAuthStateChange(
+        async function(event,session){
+
+            currentSession =
+                session;
+
+            currentUser =
+                session
+                ? session.user
+                : null;
+
+            if(currentUser){
+
+                document
+                    .getElementById(
+                        "authScreen"
+                    )
+                    .classList
+                    .add("hidden");
+
+                document
+                    .getElementById(
+                        "app"
+                    )
+                    .classList
+                    .remove("hidden");
+
+                document
+                    .getElementById(
+                        "userEmail"
+                    )
+                    .textContent =
+                    currentUser.email || "";
+
+                if(isAdmin()){
+
+                    document
+                        .getElementById(
+                            "adminNav"
+                        )
+                        .classList
+                        .remove("hidden");
+
+                    document
+                        .getElementById(
+                            "adminLabel"
+                        )
+                        .classList
+                        .remove("hidden");
+
+                }else{
+
+                    document
+                        .getElementById(
+                            "adminNav"
+                        )
+                        .classList
+                        .add("hidden");
+
+                    document
+                        .getElementById(
+                            "adminLabel"
+                        )
+                        .classList
+                        .add("hidden");
+
+                }
+
+                showPage(
+                    "dashboard"
+                );
+
+            }else{
+
+                document
+                    .getElementById(
+                        "authScreen"
+                    )
+                    .classList
+                    .remove("hidden");
+
+                document
+                    .getElementById(
+                        "app"
+                    )
+                    .classList
+                    .add("hidden");
+
+            }
+
+        }
+    );
+
+
+/* ============================================================
+   NAVIGATION
+============================================================ */
+
+document
+    .querySelectorAll(".nav-btn")
+    .forEach(function(button){
+
+        button.addEventListener(
+            "click",
+            function(){
+
+                const page =
+                    this.dataset.page;
+
+                if(
+                    page === "admin" &&
+                    !isAdmin()
+                ){
+                    return;
+                }
+
+                showPage(page);
+
+            }
+        );
+
+    });
+
+
+/* ============================================================
+   PROFILE / RELEASE PREPARATION
+============================================================ */
+
+function prepareReleaseForm(){
+
+    if(!currentUser){
+        return;
+    }
+
+    const artistName =
+        currentUser.user_metadata &&
+        currentUser.user_metadata.artist_name
+        ? currentUser.user_metadata.artist_name
+        : "";
+
+    const artistInput =
+        document.getElementById(
+            "releaseArtist"
+        );
+
+    if(
+        artistInput &&
+        !artistInput.value
+    ){
+
+        artistInput.value =
+            artistName;
+
+    }
+
+}
+
+
+/* ============================================================
+   RELEASE SUBMISSION
+============================================================ */
+
+document
+    .getElementById("releaseForm")
+    .addEventListener(
+        "submit",
+        async function(event){
+
+            event.preventDefault();
+
+            if(!currentUser){
+                return;
+            }
+
+            const message =
+                document.getElementById(
+                    "releaseMessage"
+                );
+
+            message.className =
+                "message";
+
+            message.textContent =
+                "Uploading release...";
+
+            try{
+
+                const title =
+                    document
+                        .getElementById(
+                            "releaseTitle"
+                        )
+                        .value
+                        .trim();
+
+                const artist =
+                    document
+                        .getElementById(
+                            "releaseArtist"
+                        )
+                        .value
+                        .trim();
+
+                const genre =
+                    document
+                        .getElementById(
+                            "releaseGenre"
+                        )
+                        .value
+                        .trim();
+
+                const language =
+                    document
+                        .getElementById(
+                            "releaseLanguage"
+                        )
+                        .value
+                        .trim();
+
+                const releaseDate =
+                    document
+                        .getElementById(
+                            "releaseDate"
+                        )
+                        .value ||
+                    null;
+
+                const upc =
+                    document
+                        .getElementById(
+                            "releaseUPC"
+                        )
+                        .value
+                        .trim();
+
+                const cover =
+                    document
+                        .getElementById(
+                            "releaseCover"
+                        )
+                        .value
+                        .trim();
+
+                const description =
+                    document
+                        .getElementById(
+                            "releaseDescription"
+                        )
+                        .value
+                        .trim();
+
+                const audioInput =
+                    document.getElementById(
+                        "releaseAudio"
+                    );
+
+                if(
+                    !audioInput.files ||
+                    !audioInput.files[0]
+                ){
+
+                    throw new Error(
+                        "Please select an audio file."
+                    );
+
+                }
+
+                const audioFile =
+                    audioInput.files[0];
+
+                const safeName =
+                    audioFile.name.replace(
+                        /[^a-zA-Z0-9._-]/g,
+                        "_"
+                    );
+
+                const filePath =
+                    currentUser.id +
+                    "/" +
+                    Date.now() +
+                    "_" +
+                    safeName;
+
+                const upload =
+                    await supabaseClient
+                        .storage
+                        .from("Music")
+                        .upload(
+                            filePath,
+                            audioFile,
+                            {
+                                upsert:false
+                            }
+                        );
+
+                if(upload.error){
+                    throw upload.error;
+                }
+
+                const publicURL =
+                    supabaseClient
+                        .storage
+                        .from("Music")
+                        .getPublicUrl(
+                            filePath
+                        )
+                        .data
+                        .publicUrl;
+
+                const releaseData = {
+
+                    user_id:
+                        currentUser.id,
+
+                    artist_id:
+                        currentUser.id,
+
+                    title:
+                        title,
+
+                    artist_name:
+                        artist,
+
+                    genre:
+                        genre || null,
+
+                    language:
+                        language || null,
+
+                    release_date:
+                        releaseDate,
+
+                    upc:
+                        upc || null,
+
+                    cover_art_url:
+                        cover || null,
+
+                    audio_url:
+                        publicURL,
+
+                    description:
+                        description || null,
+
+                    status:
+                        "Submitted"
+
+                };
+
+                const insert =
+                    await supabaseClient
+                        .from("releases")
+                        .insert(
+                            releaseData
+                        )
+                        .select()
+                        .single();
+
+                if(insert.error){
+                    throw insert.error;
+                }
+
+                message.className =
+                    "message";
+
+                message.textContent =
+                    "Release submitted successfully.";
+
+                document
+                    .getElementById(
+                        "releaseForm"
+                    )
+                    .reset();
+
+                await loadReleases();
+
+                setTimeout(
+                    function(){
+
+                        showPage(
+                            "releases"
+                        );
+
+                    },
+                    700
+                );
+
+            }catch(error){
+
+                console.error(
+                    "Release submission error:",
+                    error
+                );
+
+                message.className =
+                    "danger-box";
+
+                message.textContent =
+                    "Release submission failed: " +
+                    error.message;
+
+            }
+
+        }
+    );
+
+
+/* ============================================================
+   LOAD RELEASES
+============================================================ */
+
+async function loadReleases(){
+
+    if(!currentUser){
+        return;
+    }
+
+    const result =
+        await supabaseClient
+            .from("releases")
+            .select("*")
+            .eq(
+                "user_id",
+                currentUser.id
+            )
+            .order(
+                "created_at",
+                {
+                    ascending:false
+                }
+            );
+
+    if(result.error){
+
+        console.error(
+            "Release loading error:",
+            result.error
+        );
+
+        document
+            .getElementById(
+                "releasesList"
+            )
+            .innerHTML =
+            '<div class="danger-box">' +
+            escapeHTML(
+                result.error.message
+            ) +
+            '</div>';
+
+        return;
+    }
+
+    releasesCache =
+        result.data || [];
+
+    renderReleases(
+        releasesCache,
+        "releasesList"
+    );
+
+}
+
+
+/* ============================================================
+   STATUS BADGE
+============================================================ */
+
+function statusBadge(status){
+
+    const value =
+        String(
+            status || "Unknown"
+        );
+
+    const lower =
+        value.toLowerCase();
+
+    let className =
+        "pending";
+
+    if(lower === "approved"){
+        className =
+            "approved";
+    }
+
+    if(lower === "rejected"){
+        className =
+            "rejected";
+    }
+
+    if(lower === "processing"){
+        className =
+            "processing";
+    }
+
+    if(lower === "delivered"){
+        className =
+            "delivered";
+    }
+
+    return (
+        '<span class="badge ' +
+        className +
+        '">' +
+        escapeHTML(value) +
+        '</span>'
+    );
+
+}
+
+
+/* ============================================================
+   RENDER RELEASES
+============================================================ */
+
+function renderReleases(
+    list,
+    containerId
+){
+
+    const container =
+        document.getElementById(
+            containerId
+        );
+
+    if(!container){
+        return;
+    }
+
+    if(!list.length){
+
+        container.innerHTML =
+            '<div class="empty">' +
+            'No releases found.' +
+            '</div>';
+
+        return;
+
+    }
+
+    container.innerHTML =
+        list
+            .map(function(release){
+
+                const approved =
+                    String(
+                        release.status || ""
+                    ).toLowerCase() ===
+                    "approved";
+
+                return `
+
+                    <div class="release">
+
+                        <div class="release-head">
+
+                            <div>
+
+                                <div class="release-title">
+                                    ${escapeHTML(
+                                        release.title
+                                    )}
+                                </div>
+
+                                <div class="meta">
+                                    Artist:
+                                    ${escapeHTML(
+                                        release.artist_name
+                                    )}
+                                </div>
+
+                                <div class="meta">
+                                    Genre:
+                                    ${escapeHTML(
+                                        release.genre || "-"
+                                    )}
+                                </div>
+
+                                <div class="meta">
+                                    Created:
+                                    ${escapeHTML(
+                                        formatDate(
+                                            release.created_at
+                                        )
+                                    )}
+                                </div>
+
+                            </div>
+
+                            <div>
+                                ${statusBadge(
+                                    release.status
+                                )}
+                            </div>
+
+                        </div>
+
+                        ${
+                            approved
+                            ? `
+
+                                <div
+                                    style="margin-top:15px"
+                                >
+
+                                    <div class="info-box">
+
+                                        Approved release.
+                                        You can request distribution below.
+
+                                    </div>
+
+                                    <div
+                                        id="distributionArea-${escapeHTML(
+                                            release.id
+                                        )}"
+                                    >
+
+                                        <button
+                                            class="primary"
+                                            onclick="openDistribution('${escapeHTML(
+                                                release.id
+                                            )}')"
+                                        >
+                                            Distribute This Release
+                                        </button>
+
+                                    </div>
+
+                                </div>
+
+                            `
+                            : ""
+                        }
+
+                    </div>
+
+                `;
+
+            })
+            .join("");
+
+}
+
+
+/* ============================================================
+   DISTRIBUTION ACCESS
+============================================================ */
+
+async function getDistributionAccess(){
+
+    if(!currentUser){
+        return null;
+    }
+
+    const result =
+        await supabaseClient
+            .rpc(
+                "can_create_distribution",
+                {
+                    target_user_id:
+                        currentUser.id
+                }
+            );
+
+    if(result.error){
+
+        console.error(
+            "Distribution access error:",
+            result.error
+        );
+
+        return null;
+
+    }
+
+    return result.data;
+
+}
+
+
+/* ============================================================
+   DISTRIBUTION COUNT
+============================================================ */
+
+async function getDistributionCount(){
+
+    if(!currentUser){
+        return 0;
+    }
+
+    const result =
+        await supabaseClient
+            .from(
+                "distribution_queue"
+            )
+            .select(
+                "id,status",
+                {
+                    count:"exact",
+                    head:true
+                }
+            )
+            .eq(
+                "user_id",
+                currentUser.id
+            );
+
+    if(result.error){
+
+        console.error(
+            result.error
+        );
+
+        return 0;
+
+    }
+
+    return result.count || 0;
+
+}
+
+
+/* ============================================================
+   DASHBOARD
+============================================================ */
+
+async function loadDashboard(){
+
+    if(!currentUser){
+        return;
+    }
+
+    await loadReleases();
+
+    const access =
+        await getDistributionAccess();
+
+    const queueCount =
+        await getDistributionCount();
+
+    const distributionNumber =
+        access
+        ? Number(
+            access.distribution_number || 1
+        )
+        : 1;
+
+    const freeUsed =
+        Math.min(
+            3,
+            Math.max(
+                0,
+                distributionNumber - 1
+            )
+        );
+
+    const paidUsed =
+        Math.max(
+            0,
+            distributionNumber - 4
+        );
+
+    document
+        .getElementById(
+            "statReleases"
+        )
+        .textContent =
+        releasesCache.length;
+
+    document
+        .getElementById(
+            "statFreeUsed"
+        )
+        .textContent =
+        freeUsed +
+        " / 3";
+
+    document
+        .getElementById(
+            "statPaid"
+        )
+        .textContent =
+        paidUsed;
+
+    document
+        .getElementById(
+            "statQueue"
+        )
+        .textContent =
+        queueCount;
+
+    const box =
+        document.getElementById(
+            "distributionAccessBox"
+        );
+
+    if(!box){
+        return;
+    }
+
+    if(access){
+
+        if(access.free){
+
+            box.innerHTML =
+                `
+
+                <div class="message">
+
+                    Distribution #${escapeHTML(
+                        access.distribution_number
+                    )}
+                    is FREE.
+
+                    You have
+                    ${escapeHTML(
+                        access.free_remaining
+                    )}
+                    free distribution(s) remaining.
+
+                </div>
+
+                `;
+
+        }else{
+
+            box.innerHTML =
+                `
+
+                <div class="info-box">
+
+                    Your free distributions have been used.
+
+                    Please choose an annual subscription plan
+                    to continue distributing your music.
+
+                </div>
+
+                `;
+
+        }
+
+    }else{
+
+        box.innerHTML =
+            `
+
+            <div class="danger-box">
+
+                Unable to check distribution access.
+
+            </div>
+
+            `;
+
+    }
+
+    renderReleases(
+        releasesCache.slice(0,5),
+        "dashboardReleases"
+    );
+
+}
+
+
+/* ============================================================
+   OPEN DISTRIBUTION
+============================================================ */
+
+async function openDistribution(
+    releaseId
+){
+
+    const release =
+        releasesCache.find(
+            function(item){
+
+                return (
+                    item.id ===
+                    releaseId
+                );
+
+            }
+        );
+
+    if(!release){
+
+        alert(
+            "Release not found."
+        );
+
+        return;
+
+    }
+
+    const area =
+        document.getElementById(
+            "distributionArea-" +
+            releaseId
+        );
+
+    if(!area){
+        return;
+    }
+
+    area.innerHTML =
+        `
+
+        <div
+            class="section"
+            style="margin-top:15px"
+        >
+
+            <h2>
+                Create Distribution
+            </h2>
+
+            <p
+                style="
+                    margin:15px 0;
+                    color:#94a3b8
+                "
+            >
+                Select the stores where you want this release distributed.
+            </p>
+
+            <div class="store-grid">
+
+                ${
+                    STORES
+                        .map(
+                            function(store){
+
+                                return `
+
+                                    <div
+                                        class="store-item"
+                                    >
+
+                                        <label>
+
+                                            <input
+                                                type="checkbox"
+                                                value="${escapeHTML(
+                                                    store
+                                                )}"
+                                                class="store-checkbox-${escapeHTML(
+                                                    releaseId
+                                                )}"
+                                            >
+
+                                            <span>
+                                                ${escapeHTML(
+                                                    store
+                                                )}
+                                            </span>
+
+                                        </label>
+
+                                    </div>
+
+                                `;
+
+                            }
+                        )
+                        .join("")
+                }
+
+            </div>
+
+            <div
+                id="distributionMessage-${escapeHTML(
+                    releaseId
+                )}"
+            ></div>
+
+            <div
+                style="
+                    display:flex;
+                    gap:10px;
+                    margin-top:15px;
+                    flex-wrap:wrap
+                "
+            >
+
+                <button
+                    class="primary"
+                    onclick="startDistribution('${escapeHTML(
+                        releaseId
+                    )}')"
+                >
+                    Create Distribution
+                </button>
+
+                <button
+                    class="secondary"
+                    onclick="loadReleases()"
+                >
+                    Cancel
+                </button>
+
+            </div>
+
+        </div>
+
+        `;
+
+}
+
+
+/* ============================================================
+   START DISTRIBUTION
+============================================================ */
+
+async function startDistribution(
+    releaseId
+){
+
+    if(!currentUser){
+        return;
+    }
+
+    const checkboxes =
+        document.querySelectorAll(
+            ".store-checkbox-" +
+            releaseId
+        );
+
+    const selectedStores = [];
+
+    checkboxes.forEach(
+        function(checkbox){
+
+            if(checkbox.checked){
+
+                selectedStores.push(
+                    checkbox.value
+                );
+
+            }
+
+        }
+    );
+
+    const message =
+        document.getElementById(
+            "distributionMessage-" +
+            releaseId
+        );
+
+    if(!message){
+        return;
+    }
+
+    if(!selectedStores.length){
+
+        message.className =
+            "danger-box";
+
+        message.textContent =
+            "Please select at least one store.";
+
+        return;
+
+    }
+
+    message.className =
+        "message";
+
+    message.textContent =
+        "Checking distribution access...";
+
+    try{
+
+        const permission =
+            await supabaseClient
+                .rpc(
+                    "get_distribution_permission",
+                    {
+                        p_release_id:
+                            releaseId
+                    }
+                );
+
+        if(permission.error){
+            throw permission.error;
+        }
+
+        const access =
+            permission.data;
+
+        if(!access){
+
+            throw new Error(
+                "Unable to verify distribution permission."
+            );
+
+        }
+
+        if(
+            access.payment_required === true &&
+            access.plan_code === null
+        ){
+
+            message.className =
+                "info-box";
+
+            message.textContent =
+                "Please choose and activate a subscription plan before creating this distribution.";
+
+            return;
+
+        }
+
+        message.className =
+            "message";
+
+        message.textContent =
+            "Creating distribution request...";
+
+        const distribution =
+            await supabaseClient
+                .rpc(
+                    "create_subscription_distribution",
+                    {
+                        p_release_id:
+                            releaseId,
+
+                        p_stores:
+                            selectedStores
+                    }
+                );
+
+        if(distribution.error){
+            throw distribution.error;
+        }
+
+        const result =
+            distribution.data;
+
+        if(
+            !result ||
+            result.success !== true
+        ){
+
+            throw new Error(
+                "Distribution could not be created."
+            );
+
+        }
+
+        console.log(
+            "Distribution created server-side",
+            result
+        );
+
+        message.className =
+            "success-box";
+
+        if(result.is_free === true){
+
+            message.textContent =
+                "Free distribution request created successfully. " +
+                selectedStores.length +
+                " stores added to the distribution queue.";
+
+        }else if(
+            result.plan_code === "LABEL"
+        ){
+
+            message.textContent =
+                "Label distribution request created successfully. " +
+                selectedStores.length +
+                " stores added to the distribution queue.";
+
+        }else if(
+            result.managed_artist === true
+        ){
+
+            message.textContent =
+                "Managed artist distribution request created successfully. " +
+                selectedStores.length +
+                " stores added to the distribution queue.";
+
+        }else{
+
+            message.textContent =
+                "Distribution request created successfully. " +
+                selectedStores.length +
+                " stores added to the distribution queue.";
+
+        }
+
+        console.log(
+            "Distribution details",
+            {
+                releaseId:
+                    releaseId,
+
+                distributionNumber:
+                    result.distribution_number,
+
+                planCode:
+                    result.plan_code,
+
+                isFree:
+                    result.is_free,
+
+                managedArtist:
+                    result.managed_artist,
+
+                stores:
+                    selectedStores
+
+            }
+        );
+
+        await loadDashboard();
+
+        await loadPayments();
+
+        if(isAdmin()){
+
+            await loadAdminData();
+
+        }
+
+    }catch(error){
+
+        console.error(
+            "Distribution error:",
+            error
+        );
+
+        message.className =
+            "danger-box";
+
+        message.textContent =
+            "Distribution request failed: " +
+            error.message;
+
+    }
+
+}
+
+
+/* ============================================================
+   SELECT SUBSCRIPTION PLAN
+   NEW CHECKOUT FLOW
+============================================================ */
+
+async function selectPlan(
+    planCode
+){
+
+    if(!currentUser){
+
+        alert(
+            "Please login first."
+        );
+
+        return;
+
+    }
+
+    const message =
+        document.getElementById(
+            "planMessage"
+        );
+
+    if(message){
+
+        message.className =
+            "message";
+
+        message.textContent =
+            "Preparing secure checkout...";
+
+    }
+
+    try{
+
+        const planResult =
+            await supabaseClient
+                .from(
+                    "subscription_plans"
+                )
+                .select(
+                    "id, plan_code, plan_name, price, currency, duration_days"
+                )
+                .eq(
+                    "plan_code",
+                    planCode
+                )
+                .maybeSingle();
+
+        if(planResult.error){
+            throw planResult.error;
+        }
+
+        const plan =
+            planResult.data;
+
+        if(!plan){
+
+            throw new Error(
+                "Subscription plan not found."
+            );
+
+        }
+
+        /*
+         * IMPORTANT:
+         *
+         * We no longer call:
+         *
+         * create_subscription_payment
+         *
+         * and we no longer create a Manual payment here.
+         *
+         * The request now goes to the Edge Function:
+         *
+         * hyper-worker
+         *
+         * That function authenticates the user,
+         * looks up the real plan price server-side,
+         * and creates a Pending payment record.
+         */
+
+        const checkout =
+            await supabaseClient
+                .functions
+                .invoke(
+                    "hyper-worker",
+                    {
+                        body:{
+                            plan_code:
+                                plan.plan_code,
+
+                            payment_method:
+                                "CARD"
+                        }
+                    }
+                );
+
+        if(checkout.error){
+
+            console.error(
+                "Checkout function error:",
+                checkout.error
+            );
+
+            throw checkout.error;
+
+        }
+
+        const checkoutData =
+            checkout.data;
+
+        if(
+            !checkoutData ||
+            checkoutData.success !== true
+        ){
+
+            throw new Error(
+                checkoutData &&
+                checkoutData.error
+                ? checkoutData.error
+                : "Unable to create checkout session."
+            );
+
+        }
+
+        if(message){
+
+            message.className =
+                "info-box";
+
+            message.innerHTML =
+                `
+
+                <div class="checkout-box">
+
+                    <div class="checkout-title">
+
+                        ${escapeHTML(
+                            checkoutData.plan_name ||
+                            plan.plan_name
+                        )}
+
+                    </div>
+
+                    <div class="meta">
+
+                        Amount:
+                        ${escapeHTML(
+                            checkoutData.amount
+                        )}
+                        ${escapeHTML(
+                            checkoutData.currency
+                        )}
+
+                    </div>
+
+                    <div class="meta">
+
+                        Payment Method:
+                        ${escapeHTML(
+                            checkoutData.payment_method
+                        )}
+
+                    </div>
+
+                    <div class="meta">
+
+                        Payment Status:
+                        ${statusBadge(
+                            checkoutData.status
+                        )}
+
+                    </div>
+
+                    <div class="checkout-reference">
+
+                        <strong>
+                            Checkout Reference
+                        </strong>
+
+                        <br>
+
+                        ${escapeHTML(
+                            checkoutData.checkout_reference
+                        )}
+
+                    </div>
+
+                    <div class="info-box">
+
+                        Checkout session created successfully.
+                        No payment has been received yet.
+
+                        <br><br>
+
+                        The real payment gateway will be connected
+                        to this checkout session in the next step.
+
+                    </div>
+
+                </div>
+
+                `;
+
+        }
+
+        await loadPayments();
+
+    }catch(error){
+
+        console.error(
+            "Checkout creation error:",
+            error
+        );
+
+        if(message){
+
+            message.className =
+                "danger-box";
+
+            message.textContent =
+                "Checkout failed: " +
+                error.message;
+
+        }
+
+    }
+
+}
+
+
+/* ============================================================
+   PAYMENTS - ARTIST
+============================================================ */
+
+async function loadPayments(){
+
+    if(!currentUser){
+        return;
+    }
+
+    const result =
+        await supabaseClient
+            .from("payments")
+            .select("*")
+            .eq(
+                "user_id",
+                currentUser.id
+            )
+            .order(
+                "created_at",
+                {
+                    ascending:false
+                }
+            );
+
+    if(result.error){
+
+        console.error(
+            "Payments loading error:",
+            result.error
+        );
+
+        const container =
+            document.getElementById(
+                "paymentsList"
+            );
+
+        if(container){
+
+            container.innerHTML =
+                '<div class="danger-box">' +
+                escapeHTML(
+                    result.error.message
+                ) +
+                '</div>';
+
+        }
+
+        return;
+
+    }
+
+    paymentsCache =
+        result.data || [];
+
+    const container =
+        document.getElementById(
+            "paymentsList"
+        );
+
+    if(!container){
+        return;
+    }
+
+    if(!paymentsCache.length){
+
+        container.innerHTML =
+            '<div class="empty">' +
+            'No payment records found.' +
+            '</div>';
+
+        return;
+
+    }
+
+    container.innerHTML =
+        paymentsCache
+            .map(
+                function(payment){
+
+                    return `
+
+                        <div class="payment-card">
+
+                            <div class="payment-head">
+
+                                <div>
+
+                                    <strong>
+                                        Subscription Payment
+                                    </strong>
+
+                                    <div class="meta">
+
+                                        Amount:
+                                        ${escapeHTML(
+                                            payment.amount
+                                        )}
+                                        ${escapeHTML(
+                                            payment.currency
+                                        )}
+
+                                    </div>
+
+                                    <div class="meta">
+
+                                        Method:
+                                        ${escapeHTML(
+                                            payment.payment_method ||
+                                            "-"
+                                        )}
+
+                                    </div>
+
+                                    <div class="meta">
+
+                                        Provider:
+                                        ${escapeHTML(
+                                            payment.provider ||
+                                            "-"
+                                        )}
+
+                                    </div>
+
+                                    ${
+                                        payment.provider_transaction_id
+                                        ? `
+
+                                            <div class="meta">
+
+                                                Provider Transaction:
+                                                ${escapeHTML(
+                                                    payment.provider_transaction_id
+                                                )}
+
+                                            </div>
+
+                                        `
+                                        : ""
+                                    }
+
+                                    <div class="meta">
+
+                                        Created:
+                                        ${escapeHTML(
+                                            formatDate(
+                                                payment.created_at
+                                            )
+                                        )}
+
+                                    </div>
+
+                                    ${
+                                        payment.verified_at
+                                        ? `
+
+                                            <div class="meta">
+
+                                                Verified:
+                                                ${escapeHTML(
+                                                    formatDate(
+                                                        payment.verified_at
+                                                    )
+                                                )}
+
+                                            </div>
+
+                                        `
+                                        : ""
+                                    }
+
+                                </div>
+
+                                <div class="payment-status">
+
+                                    ${statusBadge(
+                                        payment.status
+                                    )}
+
+                                </div>
+
+                            </div>
+
+                        </div>
+
+                    `;
+
+                }
+            )
+            .join("");
+
+}
+
+
+/* ============================================================
+   ADMIN DATA
+============================================================ */
+
+async function loadAdminData(){
+
+    if(!isAdmin()){
+        return;
+    }
+
+    const releases =
+        await supabaseClient
+            .from("releases")
+            .select("*")
+            .order(
+                "created_at",
+                {
+                    ascending:false
+                }
+            );
+
+    if(releases.error){
+
+        console.error(
+            releases.error
+        );
+
+        return;
+
+    }
+
+    const adminReleases =
+        releases.data || [];
+
+    const payments =
+        await supabaseClient
+            .from("payments")
+            .select("*")
+            .order(
+                "created_at",
+                {
+                    ascending:false
+                }
+            );
+
+    const adminPayments =
+        payments.data || [];
+
+    const queue =
+        await supabaseClient
+            .from(
+                "distribution_queue"
+            )
+            .select("*")
+            .order(
+                "created_at",
+                {
+                    ascending:false
+                }
+            );
+
+    const adminQueue =
+        queue.data || [];
+
+    queueCache =
+        adminQueue;
+
+    document
+        .getElementById(
+            "adminReleaseCount"
+        )
+        .textContent =
+        adminReleases.length;
+
+    document
+        .getElementById(
+            "adminSubmittedCount"
+        )
+        .textContent =
+        adminReleases.filter(
+            function(item){
+
+                return (
+                    String(
+                        item.status || ""
+                    ).toLowerCase() ===
+                    "submitted"
+                );
+
+            }
+        ).length;
+
+    document
+        .getElementById(
+            "adminApprovedCount"
+        )
+        .textContent =
+        adminReleases.filter(
+            function(item){
+
+                return (
+                    String(
+                        item.status || ""
+                    ).toLowerCase() ===
+                    "approved"
+                );
+
+            }
+        ).length;
+
+    document
+        .getElementById(
+            "adminPaymentCount"
+        )
+        .textContent =
+        adminPayments.filter(
+            function(item){
+
+                return (
+                    String(
+                        item.status || ""
+                    ).toLowerCase() ===
+                    "pending"
+                );
+
+            }
+        ).length;
+
+    renderAdminReleases(
+        adminReleases
+    );
+
+    renderAdminPayments(
+        adminPayments
+    );
+
+    renderAdminQueue(
+        adminQueue
+    );
+
+}
+
+
+/* ============================================================
+   ADMIN RELEASES
+============================================================ */
+
+function renderAdminReleases(
+    list
+){
+
+    const container =
+        document.getElementById(
+            "adminReleases"
+        );
+
+    if(!container){
+        return;
+    }
+
+    if(!list.length){
+
+        container.innerHTML =
+            '<div class="empty">' +
+            'No releases.' +
+            '</div>';
+
+        return;
+
+    }
+
+    container.innerHTML =
+        `
+
+        <div class="table-wrap">
+
+            <table>
+
+                <thead>
+
+                    <tr>
+
+                        <th>Artist</th>
+                        <th>Title</th>
+                        <th>Status</th>
+                        <th>Date</th>
+                        <th>Action</th>
+
+                    </tr>
+
+                </thead>
+
+                <tbody>
+
+                    ${
+                        list
+                            .map(
+                                function(release){
+
+                                    return `
+
+                                        <tr>
+
+                                            <td>
+                                                ${escapeHTML(
+                                                    release.artist_name
+                                                )}
+                                            </td>
+
+                                            <td>
+                                                ${escapeHTML(
+                                                    release.title
+                                                )}
+                                            </td>
+
+                                            <td>
+                                                ${statusBadge(
+                                                    release.status
+                                                )}
+                                            </td>
+
+                                            <td>
+                                                ${escapeHTML(
+                                                    formatDate(
+                                                        release.created_at
+                                                    )
+                                                )}
+                                            </td>
+
+                                            <td>
+
+                                                ${
+                                                    String(
+                                                        release.status ||
+                                                        ""
+                                                    ).toLowerCase() !==
+                                                    "approved"
+
+                                                    ? `
+
+                                                        <button
+                                                            class="primary"
+                                                            onclick="approveRelease('${escapeHTML(
+                                                                release.id
+                                                            )}')"
+                                                        >
+                                                            Approve
+                                                        </button>
+
+                                                    `
+
+                                                    : `
+
+                                                        <button
+                                                            class="secondary"
+                                                            onclick="viewAdminRelease('${escapeHTML(
+                                                                release.id
+                                                            )}')"
+                                                        >
+                                                            View
+                                                        </button>
+
+                                                    `
+                                                }
+
+                                                ${
+                                                    String(
+                                                        release.status ||
+                                                        ""
+                                                    ).toLowerCase() !==
+                                                    "rejected"
+
+                                                    ? `
+
+                                                        <button
+                                                            class="danger"
+                                                            onclick="rejectRelease('${escapeHTML(
+                                                                release.id
+                                                            )}')"
+                                                        >
+                                                            Reject
+                                                        </button>
+
+                                                    `
+
+                                                    : ""
+                                                }
+
+                                            </td>
+
+                                        </tr>
+
+                                    `;
+
+                                }
+                            )
+                            .join("")
+                    }
+
+                </tbody>
+
+            </table>
+
+        </div>
+
+        `;
+
+}
+
+
+/* ============================================================
+   ADMIN APPROVE
+============================================================ */
+
+async function approveRelease(
+    releaseId
+){
+
+    if(!isAdmin()){
+        return;
+    }
+
+    const confirmed =
+        confirm(
+            "Approve this release?"
+        );
+
+    if(!confirmed){
+        return;
+    }
+
+    const result =
+        await supabaseClient
+            .from("releases")
+            .update({
+
+                status:
+                    "Approved",
+
+                updated_at:
+                    new Date()
+                        .toISOString()
+
+            })
+            .eq(
+                "id",
+                releaseId
+            );
+
+    if(result.error){
+
+        alert(
+            "Approval failed: " +
+            result.error.message
+        );
+
+        return;
+
+    }
+
+    alert(
+        "Release approved successfully."
+    );
+
+    await loadAdminData();
+
+}
+
+
+/* ============================================================
+   ADMIN REJECT
+============================================================ */
+
+async function rejectRelease(
+    releaseId
+){
+
+    if(!isAdmin()){
+        return;
+    }
+
+    const reason =
+        prompt(
+            "Enter rejection reason:"
+        );
+
+    if(reason === null){
+        return;
+    }
+
+    const result =
+        await supabaseClient
+            .from("releases")
+            .update({
+
+                status:
+                    "Rejected",
+
+                rejection_reason:
+                    reason,
+
+                updated_at:
+                    new Date()
+                        .toISOString()
+
+            })
+            .eq(
+                "id",
+                releaseId
+            );
+
+    if(result.error){
+
+        const retry =
+            await supabaseClient
+                .from("releases")
+                .update({
+
+                    status:
+                        "Rejected",
+
+                    updated_at:
+                        new Date()
+                            .toISOString()
+
+                })
+                .eq(
+                    "id",
+                    releaseId
+                );
+
+        if(retry.error){
+
+            alert(
+                "Rejection failed: " +
+                retry.error.message
+            );
+
+            return;
+
+        }
+
+    }
+
+    alert(
+        "Release rejected."
+    );
+
+    await loadAdminData();
+
+}
+
+
+/* ============================================================
+   ADMIN VIEW RELEASE
+============================================================ */
+
+function viewAdminRelease(
+    releaseId
+){
+
+    alert(
+        "Release ID: " +
+        releaseId
+    );
+
+}
+
+
+/* ============================================================
+   ADMIN PAYMENTS
+============================================================ */
+
+function renderAdminPayments(
+    list
+){
+
+    const container =
+        document.getElementById(
+            "adminPayments"
+        );
+
+    if(!container){
+        return;
+    }
+
+    if(!list.length){
+
+        container.innerHTML =
+            '<div class="empty">' +
+            'No payments.' +
+            '</div>';
+
+        return;
+
+    }
+
+    container.innerHTML =
+        `
+
+        <div class="table-wrap">
+
+            <table>
+
+                <thead>
+
+                    <tr>
+
+                        <th>User</th>
+                        <th>Amount</th>
+                        <th>Method</th>
+                        <th>Provider</th>
+                        <th>Status</th>
+                        <th>Created</th>
+                        <th>Action</th>
+
+                    </tr>
+
+                </thead>
+
+                <tbody>
+
+                    ${
+                        list
+                            .map(
+                                function(payment){
+
+                                    return `
+
+                                        <tr>
+
+                                            <td>
+                                                ${escapeHTML(
+                                                    payment.user_id
+                                                )}
+                                            </td>
+
+                                            <td>
+
+                                                ${escapeHTML(
+                                                    payment.amount
+                                                )}
+
+                                                ${escapeHTML(
+                                                    payment.currency
+                                                )}
+
+                                            </td>
+
+                                            <td>
+
+                                                ${escapeHTML(
+                                                    payment.payment_method ||
+                                                    "-"
+                                                )}
+
+                                            </td>
+
+                                            <td>
+
+                                                ${escapeHTML(
+                                                    payment.provider ||
+                                                    "-"
+                                                )}
+
+                                            </td>
+
+                                            <td>
+
+                                                ${statusBadge(
+                                                    payment.status
+                                                )}
+
+                                            </td>
+
+                                            <td>
+
+                                                ${escapeHTML(
+                                                    formatDate(
+                                                        payment.created_at
+                                                    )
+                                                )}
+
+                                            </td>
+
+                                            <td>
+
+                                                ${
+                                                    String(
+                                                        payment.status ||
+                                                        ""
+                                                    ).toLowerCase() ===
+                                                    "pending"
+
+                                                    ? `
+
+                                                        <button
+                                                            class="primary"
+                                                            onclick="verifyPayment('${escapeHTML(
+                                                                payment.id
+                                                            )}')"
+                                                        >
+                                                            Verify Manual Payment
+                                                        </button>
+
+                                                        <button
+                                                            class="danger"
+                                                            onclick="rejectPayment('${escapeHTML(
+                                                                payment.id
+                                                            )}')"
+                                                        >
+                                                            Reject
+                                                        </button>
+
+                                                    `
+
+                                                    : ""
+                                                }
+
+                                            </td>
+
+                                        </tr>
+
+                                    `;
+
+                                }
+                            )
+                            .join("")
+                    }
+
+                </tbody>
+
+            </table>
+
+        </div>
+
+        `;
+
+}
+
+
+/* ============================================================
+   ADMIN VERIFY PAYMENT
+   MANUAL FALLBACK ONLY
+============================================================ */
+
+async function verifyPayment(
+    paymentId
+){
+
+    if(!isAdmin()){
+        return;
+    }
+
+    const confirmed =
+        confirm(
+            "Confirm that this manual payment has actually been received and verified?"
+        );
+
+    if(!confirmed){
+        return;
+    }
+
+    const result =
+        await supabaseClient
+            .from("payments")
+            .update({
+
+                status:
+                    "Paid",
+
+                verified_at:
+                    new Date()
+                        .toISOString(),
+
+                verified_by:
+                    currentUser.id,
+
+                updated_at:
+                    new Date()
+                        .toISOString()
+
+            })
+            .eq(
+                "id",
+                paymentId
+            );
+
+    if(result.error){
+
+        alert(
+            "Payment verification failed: " +
+            result.error.message
+        );
+
+        return;
+
+    }
+
+    const activation =
+        await supabaseClient
+            .rpc(
+                "admin_activate_subscription",
+                {
+                    p_payment_id:
+                        paymentId
+                }
+            );
+
+    if(activation.error){
+
+        alert(
+            "Payment verified, but subscription activation failed: " +
+            activation.error.message
+        );
+
+        return;
+
+    }
+
+    const transactionUpdate =
+        await supabaseClient
+            .from(
+                "distribution_transactions"
+            )
+            .update({
+
+                status:
+                    "Paid",
+
+                updated_at:
+                    new Date()
+                        .toISOString()
+
+            })
+            .eq(
+                "payment_id",
+                paymentId
+            );
+
+    if(transactionUpdate.error){
+
+        console.error(
+            transactionUpdate.error
+        );
+
+    }
+
+    alert(
+        "Manual payment verified successfully."
+    );
+
+    await loadAdminData();
+
+}
+
+
+/* ============================================================
+   ADMIN REJECT PAYMENT
+============================================================ */
+
+async function rejectPayment(
+    paymentId
+){
+
+    if(!isAdmin()){
+        return;
+    }
+
+    const reason =
+        prompt(
+            "Why is this payment being rejected?"
+        );
+
+    if(reason === null){
+        return;
+    }
+
+    const result =
+        await supabaseClient
+            .from("payments")
+            .update({
+
+                status:
+                    "Failed",
+
+                updated_at:
+                    new Date()
+                        .toISOString()
+
+            })
+            .eq(
+                "id",
+                paymentId
+            );
+
+    if(result.error){
+
+        alert(
+            "Payment rejection failed: " +
+            result.error.message
+        );
+
+        return;
+
+    }
+
+    await supabaseClient
+        .from(
+            "distribution_transactions"
+        )
+        .update({
+
+            status:
+                "Failed",
+
+            updated_at:
+                new Date()
+                    .toISOString()
+
+        })
+        .eq(
+            "payment_id",
+            paymentId
+        );
+
+    alert(
+        "Payment rejected."
+    );
+
+    await loadAdminData();
+
+}
+
+
+/* ============================================================
+   ADMIN QUEUE
+============================================================ */
+
+function renderAdminQueue(
+    list
+){
+
+    const container =
+        document.getElementById(
+            "adminQueue"
+        );
+
+    if(!container){
+        return;
+    }
+
+    if(!list.length){
+
+        container.innerHTML =
+            '<div class="empty">' +
+            'Distribution queue is empty.' +
+            '</div>';
+
+        return;
+
+    }
+
+    container.innerHTML =
+        `
+
+        <div class="table-wrap">
+
+            <table>
+
+                <thead>
+
+                    <tr>
+
+                        <th>Queue ID</th>
+                        <th>Release ID</th>
+                        <th>User</th>
+                        <th>Stores</th>
+                        <th>Payment</th>
+                        <th>Status</th>
+                        <th>Action</th>
+
+                    </tr>
+
+                </thead>
+
+                <tbody>
+
+                    ${
+                        list
+                            .map(
+                                function(item){
+
+                                    const stores =
+                                        Array.isArray(
+                                            item.stores
+                                        )
+                                        ? item.stores.join(
+                                            ", "
+                                        )
+                                        : JSON.stringify(
+                                            item.stores
+                                        );
+
+                                    return `
+
+                                        <tr>
+
+                                            <td>
+                                                ${escapeHTML(
+                                                    item.id
+                                                )}
+                                            </td>
+
+                                            <td>
+                                                ${escapeHTML(
+                                                    item.release_id
+                                                )}
+                                            </td>
+
+                                            <td>
+                                                ${escapeHTML(
+                                                    item.user_id
+                                                )}
+                                            </td>
+
+                                            <td>
+                                                ${escapeHTML(
+                                                    stores
+                                                )}
+                                            </td>
+
+                                            <td>
+                                                ${escapeHTML(
+                                                    item.payment_id ||
+                                                    "FREE"
+                                                )}
+                                            </td>
+
+                                            <td>
+                                                ${statusBadge(
+                                                    item.status
+                                                )}
+                                            </td>
+
+                                            <td>
+
+                                                ${
+                                                    String(
+                                                        item.status ||
+                                                        ""
+                                                    ).toLowerCase() ===
+                                                    "pending"
+
+                                                    ? `
+
+                                                        <button
+                                                            class="primary"
+                                                            onclick="processDistribution('${escapeHTML(
+                                                                item.id
+                                                            )}')"
+                                                        >
+                                                            Process
+                                                        </button>
+
+                                                    `
+
+                                                    : ""
+                                                }
+
+                                            </td>
+
+                                        </tr>
+
+                                    `;
+
+                                }
+                            )
+                            .join("")
+                    }
+
+                </tbody>
+
+            </table>
+
+        </div>
+
+        `;
+
+}
+
+
+/* ============================================================
+   PROCESS DISTRIBUTION
+============================================================ */
+
+async function processDistribution(
+    queueId
+){
+
+    if(!currentUser){
+        return;
+    }
+
+    if(!isAdmin()){
+
+        alert(
+            "Admin access required."
+        );
+
+        return;
+
+    }
+
+    try{
+
+        const queueResult =
+            await supabaseClient
+                .from(
+                    "distribution_queue"
+                )
+                .select("*")
+                .eq(
+                    "id",
+                    queueId
+                )
+                .maybeSingle();
+
+        if(queueResult.error){
+            throw queueResult.error;
+        }
+
+        const queue =
+            queueResult.data;
+
+        if(!queue){
+
+            throw new Error(
+                "Distribution queue item not found."
+            );
+
+        }
+
+        if(queue.payment_id){
+
+            const paymentResult =
+                await supabaseClient
+                    .from("payments")
+                    .select("*")
+                    .eq(
+                        "id",
+                        queue.payment_id
+                    )
+                    .maybeSingle();
+
+            if(paymentResult.error){
+                throw paymentResult.error;
+            }
+
+            const payment =
+                paymentResult.data;
+
+            if(
+                String(
+                    payment.status || ""
+                ).toLowerCase() !==
+                "paid"
+            ){
+
+                alert(
+                    "This distribution cannot be processed because its payment has not been verified."
+                );
+
+                return;
+
+            }
+
+        }
+
+        const response =
+            await supabaseClient
+                .functions
+                .invoke(
+                    "process-distribution",
+                    {
+                        body:{
+                            queue_id:
+                                queueId
+                        }
+                    }
+                );
+
+        if(response.error){
+            throw response.error;
+        }
+
+        if(
+            response.data &&
+            response.data.success === false
+        ){
+
+            throw new Error(
+                response.data.error ||
+                "Distribution processing failed."
+            );
+
+        }
+
+        const transaction =
+            await supabaseClient
+                .from(
+                    "distribution_transactions"
+                )
+                .update({
+
+                    status:
+                        "Delivered",
+
+                    updated_at:
+                        new Date()
+                            .toISOString()
+
+                })
+                .eq(
+                    "distribution_queue_id",
+                    queueId
+                );
+
+        if(transaction.error){
+
+            console.error(
+                transaction.error
+            );
+
+        }
+
+        alert(
+            "Distribution processed successfully inside MIC POWER."
+        );
+
+        await loadAdminData();
+
+    }catch(error){
+
+        console.error(
+            "Distribution processing error:",
+            error
+        );
+
+        alert(
+            "Distribution processing failed: " +
+            error.message
+        );
+
+    }
+
+}
+
+
+/* ============================================================
+   INITIALIZE APP
+============================================================ */
+
+async function initializeApp(){
+
+    try{
+
+        const sessionResult =
+            await supabaseClient
+                .auth
+                .getSession();
+
+        if(
+            sessionResult.data &&
+            sessionResult.data.session
+        ){
+
+            currentSession =
+                sessionResult.data.session;
+
+            currentUser =
+                sessionResult.data.session.user;
+
+        }
+
+    }catch(error){
+
+        console.error(
+            "Initialization error:",
+            error
+        );
+
+    }
+
+}
+
+
+initializeApp();
+
+</script>
+
+</body>
+</html>
+```

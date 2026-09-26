@@ -1,0 +1,1317 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>MIC POWER</title>
+
+    <style>
+        body {
+            background: #111;
+            color: white;
+            font-family: Arial;
+            text-align: center;
+            padding-top: 50px;
+        }
+
+        .box {
+            width: 350px;
+            margin: auto;
+            padding: 30px;
+            background: #222;
+            border-radius: 15px;
+        }
+
+        input {
+            width: 90%;
+            padding: 13px;
+            margin: 8px;
+            border-radius: 8px;
+            border: none;
+            box-sizing: border-box;
+        }
+
+        button {
+            padding: 13px 25px;
+            margin: 10px 5px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+        }
+
+        #signupBox {
+            display: none;
+        }
+
+        #message {
+            margin-top: 15px;
+            font-weight: bold;
+        }
+    </style>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+<script>
+    const SUPABASE_URL = "https://mzfmdorxrwaerehzyunq.supabase.co";
+
+    const SUPABASE_PUBLISHABLE_KEY = "sb_publishable_OqE0Ang9KUs9-ky_PtWhow_KLdbvWD6";
+    const supabaseClient = window.supabase.createClient(
+        SUPABASE_URL,
+        SUPABASE_PUBLISHABLE_KEY
+    );
+
+    console.log("MIC POWER Supabase loaded");
+</script><style>
+/* =========================================
+   MIC POWER - PROFESSIONAL DASHBOARD
+   ========================================= */
+
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    font-family: Arial, Helvetica, sans-serif;
+    background: #f4f6f8;
+    color: #1f2937;
+}
+
+/* HEADER */
+
+.mp-header {
+    height: 70px;
+    background: #111827;
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 30px;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.15);
+}
+
+.mp-logo {
+    font-size: 24px;
+    font-weight: bold;
+    letter-spacing: 1px;
+}
+
+.mp-user {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+}
+
+.mp-user span {
+    font-weight: bold;
+}
+
+.mp-user button {
+    background: #ef4444;
+    border: none;
+    color: white;
+    padding: 9px 16px;
+    border-radius: 7px;
+    cursor: pointer;
+    font-weight: bold;
+}
+
+.mp-user button:hover {
+    opacity: 0.85;
+}
+
+/* MAIN LAYOUT */
+
+.mp-layout {
+    display: flex;
+    min-height: calc(100vh - 70px);
+}
+
+/* SIDEBAR */
+
+.mp-sidebar {
+    width: 240px;
+    background: #1f2937;
+    padding: 25px 15px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.mp-sidebar button {
+    background: transparent;
+    border: none;
+    color: #d1d5db;
+    padding: 14px 16px;
+    text-align: left;
+    border-radius: 8px;
+    font-size: 15px;
+    cursor: pointer;
+    transition: 0.2s;
+}
+
+.mp-sidebar button:hover {
+    background: #374151;
+    color: white;
+}
+
+/* MAIN CONTENT */
+
+.mp-main {
+    flex: 1;
+    padding: 35px;
+    overflow-y: auto;
+}
+
+.mp-section h1 {
+    font-size: 30px;
+    margin-bottom: 8px;
+}
+
+.mp-section > p {
+    color: #6b7280;
+    margin-bottom: 30px;
+}
+
+/* DASHBOARD CARDS */
+
+.mp-cards {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 20px;
+}
+
+.mp-card {
+    background: white;
+    border-radius: 12px;
+    padding: 25px;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.07);
+    border: 1px solid #e5e7eb;
+}
+
+.mp-card:hover {
+    transform: translateY(-3px);
+    transition: 0.2s;
+}
+
+.mp-icon {
+    font-size: 35px;
+    margin-bottom: 15px;
+}
+
+.mp-card h3 {
+    margin-bottom: 10px;
+    font-size: 20px;
+}
+
+.mp-card p {
+    color: #6b7280;
+    line-height: 1.5;
+    margin-bottom: 18px;
+}
+
+.mp-card button,
+.mp-empty button {
+    background: #111827;
+    color: white;
+    border: none;
+    padding: 10px 18px;
+    border-radius: 7px;
+    cursor: pointer;
+    font-weight: bold;
+}
+
+.mp-card button:hover,
+.mp-empty button:hover {
+    background: #374151;
+}
+
+/* FORM */
+
+.mp-form {
+    background: white;
+    max-width: 700px;
+    padding: 30px;
+    border-radius: 12px;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.07);
+}
+
+.mp-form label {
+    display: block;
+    font-weight: bold;
+    margin-top: 18px;
+    margin-bottom: 7px;
+}
+
+.mp-form input,
+.mp-form select {
+    width: 100%;
+    padding: 12px;
+    border: 1px solid #d1d5db;
+    border-radius: 7px;
+    font-size: 15px;
+}
+
+.mp-form input:focus,
+.mp-form select:focus {
+    outline: none;
+    border-color: #111827;
+}
+
+.mp-primary {
+    width: 100%;
+    margin-top: 25px;
+    padding: 14px;
+    background: #111827;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    font-size: 16px;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+.mp-primary:hover {
+    background: #374151;
+}
+
+/* RELEASES */
+
+.mp-release {
+    background: white;
+    padding: 20px;
+    margin-bottom: 15px;
+    border-radius: 10px;
+    display: flex;
+    gap: 20px;
+    align-items: center;
+    box-shadow: 0 3px 12px rgba(0,0,0,0.06);
+}
+
+.mp-release img {
+    width: 100px;
+    height: 100px;
+    object-fit: cover;
+    border-radius: 8px;
+}
+
+.mp-release h3 {
+    margin-bottom: 7px;
+}
+
+.mp-release p {
+    color: #6b7280;
+    margin-bottom: 5px;
+}
+
+/* EMPTY RELEASE */
+
+.mp-empty {
+    background: white;
+    padding: 40px;
+    text-align: center;
+    border-radius: 12px;
+    box-shadow: 0 3px 12px rgba(0,0,0,0.06);
+}
+
+.mp-empty h3 {
+    margin-bottom: 10px;
+}
+
+.mp-empty p {
+    color: #6b7280;
+    margin-bottom: 20px;
+}
+
+/* STATISTICS */
+
+.mp-stat-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 20px;
+}
+
+.mp-stat {
+    background: white;
+    padding: 30px;
+    border-radius: 12px;
+    text-align: center;
+    box-shadow: 0 3px 12px rgba(0,0,0,0.06);
+}
+
+.mp-stat h2 {
+    font-size: 34px;
+    margin-bottom: 8px;
+}
+
+.mp-stat p {
+    color: #6b7280;
+}
+
+/* ROYALTIES */
+
+.mp-royalty {
+    background: white;
+    max-width: 600px;
+    padding: 40px;
+    border-radius: 12px;
+    box-shadow: 0 3px 12px rgba(0,0,0,0.06);
+}
+
+.mp-royalty h2 {
+    font-size: 45px;
+    margin-bottom: 10px;
+}
+
+.mp-royalty p {
+    color: #6b7280;
+    margin-top: 10px;
+    line-height: 1.6;
+}
+
+/* PROFILE */
+
+.mp-profile {
+    background: white;
+    max-width: 600px;
+    padding: 35px;
+    border-radius: 12px;
+    box-shadow: 0 3px 12px rgba(0,0,0,0.06);
+}
+
+.mp-profile h2 {
+    font-size: 28px;
+    margin-bottom: 12px;
+}
+
+.mp-profile p {
+    color: #6b7280;
+    margin-bottom: 8px;
+}
+
+/* MOBILE */
+
+@media (max-width: 700px) {
+
+    .mp-sidebar {
+        width: 190px;
+    }
+
+    .mp-main {
+        padding: 20px;
+    }
+
+    .mp-header {
+        padding: 0 15px;
+    }
+
+    .mp-logo {
+        font-size: 19px;
+    }
+
+    .mp-user span {
+        display: none;
+    }
+
+}
+</style></head>
+
+<body>
+
+    <!-- LOGIN -->
+    <div class="box" id="loginBox">
+
+        <h1>🎵 MIC POWER</h1>
+        <h2>Artist Login</h2>
+
+        <input type="email" id="loginEmail" placeholder="Enter your email">
+
+        <input type="password" id="loginPassword" placeholder="Enter your password">
+
+        <br>
+
+        <button onclick="login()">LOGIN</button>
+
+        <button onclick="showSignup()">CREATE ACCOUNT</button>
+
+        <p id="loginMessage"></p>
+
+    </div>
+
+
+    <!-- CREATE ACCOUNT -->
+    <div class="box" id="signupBox">
+
+        <h1>🎤 MIC POWER</h1>
+        <h2>Create Artist Account</h2>
+
+        <input type="text" id="artistName" placeholder="Artist Name">
+
+        <input type="email" id="signupEmail" placeholder="Email">
+
+        <input type="password" id="signupPassword" placeholder="Password">
+
+        <input type="password" id="confirmPassword" placeholder="Confirm Password">
+
+        <br>
+
+        <button onclick="createAccount()">CREATE ACCOUNT</button>
+
+        <button onclick="showLogin()">BACK TO LOGIN</button>
+
+        <p id="signupMessage"></p>
+
+    </div>
+
+
+    <script>
+// ================================
+// MIC POWER - MAIN SYSTEM
+// ================================
+
+
+// LOGIN
+async function login() {
+
+    const email = document.getElementById("loginEmail").value.trim();
+    const password = document.getElementById("loginPassword").value;
+    const message = document.getElementById("loginMessage");
+
+    if (!email || !password) {
+        message.innerHTML = "⚠️ Please enter your email and password.";
+        return;
+    }
+
+    message.innerHTML = "⏳ Logging in...";
+
+    const { data, error } =
+        await supabaseClient.auth.signInWithPassword({
+            email: email,
+            password: password
+        });
+
+    if (error) {
+        message.innerHTML = "❌ " + error.message;
+        return;
+    }
+
+    message.innerHTML = "✅ Login successful!";
+
+    setTimeout(() => {
+        showDashboard();
+    }, 500);
+}
+
+
+// SHOW SIGNUP
+function showSignup() {
+
+    document.getElementById("loginBox").style.display = "none";
+    document.getElementById("signupBox").style.display = "block";
+}
+
+
+// SHOW LOGIN
+function showLogin() {
+
+    document.getElementById("signupBox").style.display = "none";
+    document.getElementById("loginBox").style.display = "block";
+}
+
+
+// CREATE ACCOUNT
+async function createAccount() {
+
+    const name =
+        document.getElementById("artistName").value.trim();
+
+    const email =
+        document.getElementById("signupEmail").value.trim();
+
+    const password =
+        document.getElementById("signupPassword").value;
+
+    const confirm =
+        document.getElementById("confirmPassword").value;
+
+    const message =
+        document.getElementById("signupMessage");
+
+
+    if (!name || !email || !password || !confirm) {
+
+        message.innerHTML =
+            "⚠️ Please fill in all fields.";
+
+        return;
+    }
+
+
+    if (password !== confirm) {
+
+        message.innerHTML =
+            "❌ Passwords do not match.";
+
+        return;
+    }
+
+
+    if (password.length < 6) {
+
+        message.innerHTML =
+            "⚠️ Password must be at least 6 characters.";
+
+        return;
+    }
+
+
+    message.innerHTML =
+        "⏳ Creating account...";
+
+
+    const { data, error } =
+        await supabaseClient.auth.signUp({
+
+            email: email,
+
+            password: password,
+
+            options: {
+
+                data: {
+
+                    artist_name: name
+
+                }
+
+            }
+
+        });
+
+
+    if (error) {
+
+        message.innerHTML =
+            "❌ " + error.message;
+
+        return;
+    }
+
+
+    message.innerHTML =
+        "✅ Account created successfully!";
+
+}
+
+
+// ================================
+// DASHBOARD
+// ================================
+
+async function showDashboard() {
+
+    const {
+        data: { user }
+    } = await supabaseClient.auth.getUser();
+
+
+    if (!user) {
+
+        showLogin();
+
+        return;
+    }
+
+
+    const artistName =
+        user.user_metadata?.artist_name ||
+        user.email.split("@")[0];
+
+
+    document.body.innerHTML = `
+
+        <div id="micPowerApp">
+
+            <header class="mp-header">
+
+                <div class="mp-logo">
+                    🎵 MIC POWER
+                </div>
+
+                <div class="mp-user">
+
+                    <span>
+                        ${escapeHTML(artistName)}
+                    </span>
+
+                    <button onclick="logout()">
+                        Logout
+                    </button>
+
+                </div>
+
+            </header>
+
+
+            <div class="mp-layout">
+
+
+                <aside class="mp-sidebar">
+
+                    <button
+                        onclick="openSection('dashboard')">
+                        🏠 Dashboard
+                    </button>
+
+                    <button
+                        onclick="openSection('upload')">
+                        🎵 Upload Music
+                    </button>
+
+                    <button
+                        onclick="openSection('releases')">
+                        💿 My Releases
+                    </button>
+
+                    <button
+                        onclick="openSection('statistics')">
+                        📊 Statistics
+                    </button>
+
+                    <button
+                        onclick="openSection('royalties')">
+                        💰 Royalties
+                    </button>
+
+                    <button
+                        onclick="openSection('profile')">
+                        👤 Artist Profile
+                    </button>
+
+                </aside>
+
+
+                <main class="mp-main">
+
+
+                    <!-- DASHBOARD -->
+
+                    <section
+                        id="section-dashboard"
+                        class="mp-section">
+
+                        <h1>
+                            Welcome to MIC POWER 🎵
+                        </h1>
+
+                        <p>
+                            Artist Dashboard
+                        </p>
+
+
+                        <div class="mp-cards">
+
+                            <div class="mp-card">
+
+                                <div class="mp-icon">
+                                    🎵
+                                </div>
+
+                                <h3>
+                                    Upload Music
+                                </h3>
+
+                                <p>
+                                    Upload your songs
+                                    and prepare releases.
+                                </p>
+
+                                <button
+                                    onclick="openSection('upload')">
+                                    Upload
+                                </button>
+
+                            </div>
+
+
+                            <div class="mp-card">
+
+                                <div class="mp-icon">
+                                    💿
+                                </div>
+
+                                <h3>
+                                    My Releases
+                                </h3>
+
+                                <p>
+                                    Manage your music releases.
+                                </p>
+
+                                <button
+                                    onclick="openSection('releases')">
+                                    View Releases
+                                </button>
+
+                            </div>
+
+
+                            <div class="mp-card">
+
+                                <div class="mp-icon">
+                                    📊
+                                </div>
+
+                                <h3>
+                                    Statistics
+                                </h3>
+
+                                <p>
+                                    View your music statistics.
+                                </p>
+
+                                <button
+                                    onclick="openSection('statistics')">
+                                    View Statistics
+                                </button>
+
+                            </div>
+
+
+                            <div class="mp-card">
+
+                                <div class="mp-icon">
+                                    💰
+                                </div>
+
+                                <h3>
+                                    Royalties
+                                </h3>
+
+                                <p>
+                                    Track your music earnings.
+                                </p>
+
+                                <button
+                                    onclick="openSection('royalties')">
+                                    View Royalties
+                                </button>
+
+                            </div>
+
+                        </div>
+
+                    </section>
+
+
+                    <!-- UPLOAD -->
+
+                    <section
+                        id="section-upload"
+                        class="mp-section"
+                        style="display:none;">
+
+                        <h1>
+                            🎵 Upload Music
+                        </h1>
+
+                        <p>
+                            Create your music release.
+                        </p>
+
+
+                        <div class="mp-form">
+
+                            <label>
+                                Artist Name
+                            </label>
+
+                            <input
+                                id="releaseArtist"
+                                type="text"
+                                value="${escapeHTML(artistName)}">
+
+
+                            <label>
+                                Song Title
+                            </label>
+
+                            <input
+                                id="songTitle"
+                                type="text"
+                                placeholder="Enter song title">
+
+
+                            <label>
+                                Release Type
+                            </label>
+
+                            <select id="releaseType">
+
+                                <option value="Single">
+                                    Single
+                                </option>
+
+                                <option value="EP">
+                                    EP
+                                </option>
+
+                                <option value="Album">
+                                    Album
+                                </option>
+
+                            </select>
+
+
+                            <label>
+                                Release Date
+                            </label>
+
+                            <input
+                                id="releaseDate"
+                                type="date">
+
+
+                            <label>
+                                Cover Art
+                            </label>
+
+                            <input
+                                id="coverFile"
+                                type="file"
+                                accept="image/*">
+
+
+                            <label>
+                                Audio File
+                            </label>
+
+                            <input
+                                id="audioFile"
+                                type="file"
+                                accept="audio/*">
+
+
+                            <button
+                                class="mp-primary"
+                                onclick="uploadRelease()">
+
+                                🚀 UPLOAD RELEASE
+
+                            </button>
+
+
+                            <p id="uploadMessage"></p>
+
+                        </div>
+
+                    </section>
+
+
+                    <!-- RELEASES -->
+
+                    <section
+                        id="section-releases"
+                        class="mp-section"
+                        style="display:none;">
+
+                        <h1>
+                            💿 My Releases
+                        </h1>
+
+                        <div id="releaseList">
+
+                            <p>
+                                Loading releases...
+                            </p>
+
+                        </div>
+
+                    </section>
+
+
+                    <!-- STATISTICS -->
+
+                    <section
+                        id="section-statistics"
+                        class="mp-section"
+                        style="display:none;">
+
+                        <h1>
+                            📊 Statistics
+                        </h1>
+
+                        <div class="mp-stat-grid">
+
+                            <div class="mp-stat">
+
+                                <h2 id="statReleases">
+                                    0
+                                </h2>
+
+                                <p>
+                                    Releases
+                                </p>
+
+                            </div>
+
+
+                            <div class="mp-stat">
+
+                                <h2>
+                                    0
+                                </h2>
+
+                                <p>
+                                    Streams
+                                </p>
+
+                            </div>
+
+
+                            <div class="mp-stat">
+
+                                <h2>
+                                    $0
+                                </h2>
+
+                                <p>
+                                    Earnings
+                                </p>
+
+                            </div>
+
+                        </div>
+
+                    </section>
+
+
+                    <!-- ROYALTIES -->
+
+                    <section
+                        id="section-royalties"
+                        class="mp-section"
+                        style="display:none;">
+
+                        <h1>
+                            💰 Royalties
+                        </h1>
+
+                        <div class="mp-royalty">
+
+                            <h2>
+                                $0.00
+                            </h2>
+
+                            <p>
+                                Total royalties
+                            </p>
+
+                            <p>
+                                Your royalty system will
+                                appear here as MIC POWER
+                                distribution develops.
+                            </p>
+
+                        </div>
+
+                    </section>
+
+
+                    <!-- PROFILE -->
+
+                    <section
+                        id="section-profile"
+                        class="mp-section"
+                        style="display:none;">
+
+                        <h1>
+                            👤 Artist Profile
+                        </h1>
+
+                        <div class="mp-profile">
+
+                            <h2>
+                                ${escapeHTML(artistName)}
+                            </h2>
+
+                            <p>
+                                ${escapeHTML(user.email)}
+                            </p>
+
+                            <p>
+                                MIC POWER Artist Account
+                            </p>
+
+                        </div>
+
+                    </section>
+
+
+                </main>
+
+            </div>
+
+        </div>
+
+    `;
+}
+
+
+// ================================
+// SECTION NAVIGATION
+// ================================
+
+function openSection(section) {
+
+    const sections =
+        document.querySelectorAll(".mp-section");
+
+
+    sections.forEach(item => {
+
+        item.style.display = "none";
+
+    });
+
+
+    const selected =
+        document.getElementById(
+            "section-" + section
+        );
+
+
+    if (selected) {
+
+        selected.style.display = "block";
+
+    }
+
+
+    if (section === "releases") {
+
+        loadReleases();
+
+    }
+
+
+    if (section === "statistics") {
+
+        loadStatistics();
+
+    }
+
+}
+
+
+    } catch (error) {
+
+        console.error(error);
+
+        message.innerHTML =
+            "❌ Upload failed: " +
+            error.message;
+
+    }
+
+}
+
+
+// ================================
+// LOAD RELEASES
+// ================================
+
+async function loadReleases() {
+
+    const container =
+        document.getElementById("releaseList");
+
+
+    if (!container) return;
+
+
+    container.innerHTML =
+        "<p>⏳ Loading releases...</p>";
+
+
+    const {
+        data: { user }
+    } = await supabaseClient.auth.getUser();
+
+
+    if (!user) {
+
+        container.innerHTML =
+            "<p>❌ Please login again.</p>";
+
+        return;
+    }
+
+
+    const {
+        data,
+        error
+    } = await supabaseClient
+        .from("releases")
+        .select("*")
+        .eq("user_id", user.id)
+        .order("created_at", {
+            ascending: false
+        });
+
+
+    if (error) {
+
+        container.innerHTML =
+            "❌ " + error.message;
+
+        return;
+    }
+
+
+    if (!data || data.length === 0) {
+
+        container.innerHTML = `
+            <div class="mp-empty">
+
+                <h3>
+                    🎵 No releases yet
+                </h3>
+
+                <p>
+                    Upload your first song.
+                </p>
+
+                <button
+                    onclick="openSection('upload')">
+
+                    Upload Music
+
+                </button>
+
+            </div>
+        `;
+
+        return;
+    }
+
+
+    container.innerHTML =
+        data.map(release => `
+
+            <div class="mp-release">
+
+                <img
+                    src="${escapeHTML(release.cover_url || "")}"
+                    onerror="this.style.display='none';">
+
+                <div>
+
+                    <h3>
+                        ${escapeHTML(release.song_title)}
+                    </h3>
+
+                    <p>
+                        ${escapeHTML(release.artist_name)}
+                    </p>
+
+                    <p>
+                        ${escapeHTML(release.release_type)}
+                    </p>
+
+                    <audio
+                        controls
+                        src="${escapeHTML(release.audio_url)}">
+                    </audio>
+
+                </div>
+
+            </div>
+
+        `).join("");
+
+}
+
+
+// ================================
+// STATISTICS
+// ================================
+
+async function loadStatistics() {
+
+    const stat =
+        document.getElementById("statReleases");
+
+
+    if (!stat) return;
+
+
+    const {
+        data: { user }
+    } = await supabaseClient.auth.getUser();
+
+
+    if (!user) return;
+
+
+    const {
+        count,
+        error
+    } = await supabaseClient
+        .from("releases")
+        .select("*", {
+            count: "exact",
+            head: true
+        })
+        .eq("user_id", user.id);
+
+
+    if (!error) {
+
+        stat.innerHTML =
+            count || 0;
+
+    }
+
+}
+
+
+// ================================
+// LOGOUT
+// ================================
+
+async function logout() {
+
+    await supabaseClient.auth.signOut();
+
+    location.reload();
+
+}
+
+
+// ================================
+// HELPERS
+// ================================
+
+function getExtension(filename) {
+
+    const parts =
+        filename.split(".");
+
+    return parts.length > 1
+        ? parts.pop().toLowerCase()
+        : "file";
+
+}
+
+
+function escapeHTML(value) {
+
+    return String(value || "")
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/"/g, "&quot;")
+        .replace(/'/g, "&#039;");
+
+}
+</script>
+

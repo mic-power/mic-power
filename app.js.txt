@@ -1,0 +1,136 @@
+const SUPABASE_URL =
+    "https://mzfmdorxrwaerehzyunq.supabase.co";
+
+const SUPABASE_PUBLISHABLE_KEY =
+    sb_publishable_OqE0Ang9KUs9-ky_PtWhow_KLdbvWD6;
+
+const supabaseClient = window.supabase.createClient(
+    SUPABASE_URL,
+    SUPABASE_PUBLISHABLE_KEY
+);
+
+
+const registerForm = document.getElementById("registerForm");
+const registerBtn = document.getElementById("registerBtn");
+const message = document.getElementById("message");
+
+
+registerForm.addEventListener("submit", async function (event) {
+
+    event.preventDefault();
+
+    const artistName =
+        document.getElementById("artistName").value.trim();
+
+    const fullName =
+        document.getElementById("fullName").value.trim();
+
+    const email =
+        document.getElementById("email").value.trim();
+
+    const password =
+        document.getElementById("password").value;
+
+    const country =
+        document.getElementById("country").value;
+
+
+    message.textContent = "";
+    message.className = "";
+
+    registerBtn.disabled = true;
+    registerBtn.textContent = "CREATING ACCOUNT...";
+
+
+    try {
+
+        // CREATE SUPABASE AUTH ACCOUNT
+
+        const { data, error } =
+            await supabaseClient.auth.signUp({
+
+                email: email,
+
+                password: password,
+
+                options: {
+
+                    data: {
+                        artist_name: artistName,
+                        full_name: fullName,
+                        country: country
+                    }
+
+                }
+
+            });
+
+
+        if (error) {
+            throw error;
+        }
+
+
+        // CHECK USER
+
+        const user = data.user;
+
+        if (!user) {
+            throw new Error(
+                "Account was not created."
+            );
+        }
+
+
+        // CREATE ARTIST PROFILE
+
+        const { error: artistError } =
+            await supabaseClient
+                .from("artists")
+                .insert({
+
+                    user_id: user.id,
+
+                    artist_name: artistName,
+
+                    full_name: fullName,
+
+                    country: country
+
+                });
+
+
+        if (artistError) {
+            throw artistError;
+        }
+
+
+        message.textContent =
+            "Account created successfully! Welcome to MIC POWER.";
+
+        message.className = "success";
+
+
+        registerForm.reset();
+
+
+    } catch (error) {
+
+        console.error(error);
+
+        message.textContent =
+            error.message || "Registration failed.";
+
+        message.className = "error";
+
+
+    } finally {
+
+        registerBtn.disabled = false;
+
+        registerBtn.textContent =
+            "CREATE ACCOUNT";
+
+    }
+
+});

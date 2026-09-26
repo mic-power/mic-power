@@ -1,0 +1,2280 @@
+```html
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>MIC POWER</title>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+<style>
+*{
+    box-sizing:border-box;
+    margin:0;
+    padding:0;
+}
+
+body{
+    font-family:Arial,Helvetica,sans-serif;
+    background:#f4f6f8;
+    color:#222;
+}
+
+button,
+input,
+select{
+    font-family:inherit;
+}
+
+.hidden{
+    display:none!important;
+}
+
+/* LOGIN */
+
+.auth-page{
+    min-height:100vh;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    background:linear-gradient(135deg,#111,#222);
+    padding:20px;
+}
+
+.auth-box{
+    width:100%;
+    max-width:430px;
+    background:white;
+    padding:35px;
+    border-radius:18px;
+    box-shadow:0 20px 60px rgba(0,0,0,.3);
+}
+
+.logo{
+    text-align:center;
+    font-size:34px;
+    font-weight:900;
+    letter-spacing:2px;
+    margin-bottom:8px;
+}
+
+.logo-sub{
+    text-align:center;
+    color:#777;
+    margin-bottom:30px;
+}
+
+.auth-box h2{
+    margin-bottom:20px;
+}
+
+.input-group{
+    margin-bottom:16px;
+}
+
+.input-group label{
+    display:block;
+    margin-bottom:7px;
+    font-weight:bold;
+    font-size:14px;
+}
+
+.input-group input,
+.input-group select{
+    width:100%;
+    padding:13px;
+    border:1px solid #ddd;
+    border-radius:9px;
+    outline:none;
+}
+
+.input-group input:focus,
+.input-group select:focus{
+    border-color:#111;
+}
+
+.primary-btn{
+    width:100%;
+    border:0;
+    padding:14px;
+    background:#111;
+    color:white;
+    border-radius:9px;
+    font-weight:bold;
+    cursor:pointer;
+}
+
+.primary-btn:hover{
+    opacity:.9;
+}
+
+.secondary-btn{
+    border:0;
+    background:none;
+    color:#111;
+    cursor:pointer;
+    font-weight:bold;
+}
+
+.auth-switch{
+    text-align:center;
+    margin-top:20px;
+    color:#666;
+}
+
+.message{
+    margin-top:15px;
+    padding:10px;
+    border-radius:8px;
+    font-size:14px;
+}
+
+/* DASHBOARD */
+
+.dashboard{
+    min-height:100vh;
+}
+
+.header{
+    height:70px;
+    background:#111;
+    color:white;
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    padding:0 25px;
+    position:sticky;
+    top:0;
+    z-index:10;
+}
+
+.header-logo{
+    font-size:25px;
+    font-weight:900;
+    letter-spacing:2px;
+}
+
+.header-user{
+    display:flex;
+    align-items:center;
+    gap:15px;
+}
+
+.logout-btn{
+    background:white;
+    color:#111;
+    border:0;
+    padding:9px 15px;
+    border-radius:7px;
+    cursor:pointer;
+    font-weight:bold;
+}
+
+.layout{
+    display:flex;
+    min-height:calc(100vh - 70px);
+}
+
+.sidebar{
+    width:230px;
+    background:#181818;
+    color:white;
+    padding:20px 12px;
+}
+
+.sidebar button{
+    width:100%;
+    background:none;
+    color:#ddd;
+    border:0;
+    padding:13px;
+    text-align:left;
+    border-radius:8px;
+    cursor:pointer;
+    margin-bottom:5px;
+}
+
+.sidebar button:hover,
+.sidebar button.active{
+    background:#333;
+    color:white;
+}
+
+.main{
+    flex:1;
+    padding:30px;
+    max-width:1400px;
+}
+
+.section{
+    display:none;
+}
+
+.section.active{
+    display:block;
+}
+
+.section-title{
+    font-size:28px;
+    margin-bottom:8px;
+}
+
+.section-subtitle{
+    color:#777;
+    margin-bottom:25px;
+}
+
+/* CARDS */
+
+.cards{
+    display:grid;
+    grid-template-columns:repeat(3,1fr);
+    gap:20px;
+    margin-bottom:25px;
+}
+
+.card{
+    background:white;
+    border-radius:14px;
+    padding:25px;
+    box-shadow:0 3px 15px rgba(0,0,0,.06);
+}
+
+.card-number{
+    font-size:32px;
+    font-weight:900;
+    margin-top:10px;
+}
+
+.card-label{
+    color:#777;
+}
+
+/* FORM */
+
+.form{
+    background:white;
+    padding:25px;
+    border-radius:15px;
+    max-width:800px;
+    box-shadow:0 3px 15px rgba(0,0,0,.06);
+}
+
+.form-row{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:18px;
+}
+
+.form input,
+.form select{
+    width:100%;
+    padding:13px;
+    border:1px solid #ddd;
+    border-radius:8px;
+}
+
+.form label{
+    display:block;
+    margin-bottom:7px;
+    font-weight:bold;
+}
+
+.form-group{
+    margin-bottom:18px;
+}
+
+.file-note{
+    color:#777;
+    font-size:12px;
+    margin-top:5px;
+}
+
+/* RELEASES */
+
+.release-list{
+    display:flex;
+    flex-direction:column;
+    gap:15px;
+}
+
+.release{
+    background:white;
+    padding:18px;
+    border-radius:12px;
+    display:flex;
+    gap:18px;
+    align-items:center;
+    box-shadow:0 3px 15px rgba(0,0,0,.05);
+}
+
+.release-cover{
+    width:75px;
+    height:75px;
+    border-radius:9px;
+    object-fit:cover;
+    background:#ddd;
+}
+
+.release-info{
+    flex:1;
+}
+
+.release-title{
+    font-weight:bold;
+    font-size:18px;
+    margin-bottom:5px;
+}
+
+.release-meta{
+    color:#777;
+    font-size:13px;
+}
+
+.status{
+    background:#eee;
+    padding:7px 12px;
+    border-radius:20px;
+    font-size:12px;
+    font-weight:bold;
+}
+
+.empty{
+    background:white;
+    padding:40px;
+    text-align:center;
+    border-radius:14px;
+    color:#777;
+}
+
+/* PROFILE */
+
+.profile{
+    background:white;
+    padding:25px;
+    border-radius:15px;
+    max-width:700px;
+}
+
+.profile-item{
+    padding:15px 0;
+    border-bottom:1px solid #eee;
+}
+
+.profile-label{
+    color:#777;
+    font-size:13px;
+    margin-bottom:5px;
+}
+
+.profile-value{
+    font-weight:bold;
+}
+
+/* MOBILE */
+
+@media(max-width:800px){
+
+    .sidebar{
+        width:70px;
+    }
+
+    .sidebar button{
+        font-size:0;
+        text-align:center;
+    }
+
+    .sidebar button:first-letter{
+        font-size:20px;
+    }
+
+    .main{
+        padding:20px;
+    }
+
+    .cards{
+        grid-template-columns:1fr;
+    }
+
+    .form-row{
+        grid-template-columns:1fr;
+    }
+
+    .header{
+        padding:0 15px;
+    }
+
+    .header-user span{
+        display:none;
+    }
+}
+</style>
+</head>
+
+<body>
+
+<!-- ========================= -->
+<!-- AUTH -->
+<!-- ========================= -->
+
+<div id="authPage" class="auth-page">
+
+    <div class="auth-box">
+
+        <div class="logo">MIC POWER</div>
+
+        <div class="logo-sub">
+            Music Distribution Platform
+        </div>
+
+        <!-- LOGIN -->
+
+        <div id="loginBox">
+
+            <h2>Login</h2>
+
+            <div class="input-group">
+                <label>Email</label>
+                <input
+                    type="email"
+                    id="loginEmail"
+                    placeholder="Enter your email"
+                >
+            </div>
+
+            <div class="input-group">
+                <label>Password</label>
+                <input
+                    type="password"
+                    id="loginPassword"
+                    placeholder="Enter your password"
+                >
+            </div>
+
+            <button
+                class="primary-btn"
+                onclick="login()"
+            >
+                Login
+            </button>
+
+            <div
+                id="loginMessage"
+                class="message"
+            ></div>
+
+            <div class="auth-switch">
+                Don't have an account?
+                <button
+                    class="secondary-btn"
+                    onclick="showSignup()"
+                >
+                    Create Account
+                </button>
+            </div>
+
+        </div>
+
+        <!-- SIGNUP -->
+
+        <div id="signupBox" class="hidden">
+
+            <h2>Create Account</h2>
+
+            <div class="input-group">
+                <label>Artist Name</label>
+                <input
+                    type="text"
+                    id="artistName"
+                    placeholder="Artist name"
+                >
+            </div>
+
+            <div class="input-group">
+                <label>Email</label>
+                <input
+                    type="email"
+                    id="signupEmail"
+                    placeholder="Email"
+                >
+            </div>
+
+            <div class="input-group">
+                <label>Password</label>
+                <input
+                    type="password"
+                    id="signupPassword"
+                    placeholder="Password"
+                >
+            </div>
+
+            <div class="input-group">
+                <label>Confirm Password</label>
+                <input
+                    type="password"
+                    id="confirmPassword"
+                    placeholder="Confirm password"
+                >
+            </div>
+
+            <button
+                class="primary-btn"
+                onclick="createAccount()"
+            >
+                Create Account
+            </button>
+
+            <div
+                id="signupMessage"
+                class="message"
+            ></div>
+
+            <div class="auth-switch">
+                Already have an account?
+                <button
+                    class="secondary-btn"
+                    onclick="showLogin()"
+                >
+                    Login
+                </button>
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+
+<!-- ========================= -->
+<!-- DASHBOARD -->
+<!-- ========================= -->
+
+<div id="dashboard" class="dashboard hidden">
+
+    <header class="header">
+
+        <div class="header-logo">
+            MIC POWER
+        </div>
+
+        <div class="header-user">
+
+            <span id="headerArtistName">
+                Artist
+            </span>
+
+            <button
+                class="logout-btn"
+                onclick="logout()"
+            >
+                Logout
+            </button>
+
+        </div>
+
+    </header>
+
+
+    <div class="layout">
+
+        <!-- SIDEBAR -->
+
+        <aside class="sidebar">
+
+            <button
+                class="active"
+                onclick="openSection('home',this)"
+            >
+                🏠 Dashboard
+            </button>
+
+            <button
+                onclick="openSection('upload',this)"
+            >
+                🎵 Upload Music
+            </button>
+
+            <button
+                onclick="openSection('releases',this)"
+            >
+                💿 My Releases
+            </button>
+
+            <button
+                onclick="openSection('statistics',this)"
+            >
+                📊 Statistics
+            </button>
+
+            <button
+                onclick="openSection('royalties',this)"
+            >
+                💰 Royalties
+            </button>
+
+            <button
+                onclick="openSection('profile',this)"
+            >
+                👤 Artist Profile
+            </button>
+
+        </aside>
+
+
+        <!-- MAIN -->
+
+        <main class="main">
+
+            <!-- HOME -->
+
+            <section
+                id="home"
+                class="section active"
+            >
+
+                <h1 class="section-title">
+                    Dashboard
+                </h1>
+
+                <p class="section-subtitle">
+                    Welcome to MIC POWER.
+                </p>
+
+                <div class="cards">
+
+                    <div class="card">
+                        <div class="card-label">
+                            Total Releases
+                        </div>
+
+                        <div
+                            id="totalReleases"
+                            class="card-number"
+                        >
+                            0
+                        </div>
+                    </div>
+
+                    <div class="card">
+                        <div class="card-label">
+                            Draft Releases
+                        </div>
+
+                        <div
+                            id="draftReleases"
+                            class="card-number"
+                        >
+                            0
+                        </div>
+                    </div>
+
+                    <div class="card">
+                        <div class="card-label">
+                            Published Releases
+                        </div>
+
+                        <div
+                            id="publishedReleases"
+                            class="card-number"
+                        >
+                            0
+                        </div>
+                    </div>
+
+                </div>
+
+                <div class="card">
+
+                    <h3>
+                        MIC POWER
+                    </h3>
+
+                    <p style="margin-top:10px;color:#777;">
+                        Upload and manage your music releases
+                        from one platform.
+                    </p>
+
+                </div>
+
+            </section>
+
+
+            <!-- UPLOAD -->
+
+            <section
+                id="upload"
+                class="section"
+            >
+
+                <h1 class="section-title">
+                    Upload Music
+                </h1>
+
+                <p class="section-subtitle">
+                    Upload your music release.
+                </p>
+
+                <div class="form">
+
+                    <div class="form-group">
+
+                        <label>
+                            Song Title *
+                        </label>
+
+                        <input
+                            type="text"
+                            id="songTitle"
+                            placeholder="Song title"
+                        >
+
+                    </div>
+
+
+                    <div class="form-group">
+
+                        <label>
+                            Artist Name *
+                        </label>
+
+                        <input
+                            type="text"
+                            id="releaseArtist"
+                            placeholder="Artist name"
+                        >
+
+                    </div>
+
+
+                    <div class="form-row">
+
+                        <div class="form-group">
+
+                            <label>
+                                Release Type
+                            </label>
+
+                            <select id="releaseType">
+
+                                <option value="Single">
+                                    Single
+                                </option>
+
+                                <option value="EP">
+                                    EP
+                                </option>
+
+                                <option value="Album">
+                                    Album
+                                </option>
+
+                            </select>
+
+                        </div>
+
+
+                        <div class="form-group">
+
+                            <label>
+                                Release Date
+                            </label>
+
+                            <input
+                                type="date"
+                                id="releaseDate"
+                            >
+
+                        </div>
+
+                    </div>
+
+
+                    <div class="form-group">
+
+                        <label>
+                            Audio File *
+                        </label>
+
+                        <input
+                            type="file"
+                            id="audioFile"
+                            accept="audio/*"
+                        >
+
+                        <div class="file-note">
+                            MP3, WAV and other audio formats.
+                        </div>
+
+                    </div>
+
+
+                    <div class="form-group">
+
+                        <label>
+                            Cover Art *
+                        </label>
+
+                        <input
+                            type="file"
+                            id="coverFile"
+                            accept="image/*"
+                        >
+
+                        <div class="file-note">
+                            JPG, PNG or other image formats.
+                        </div>
+
+                    </div>
+
+
+                    <button
+                        class="primary-btn"
+                        onclick="uploadRelease()"
+                    >
+                        Upload Release
+                    </button>
+
+
+                    <div
+                        id="uploadMessage"
+                        class="message"
+                    ></div>
+
+                </div>
+
+            </section>
+
+
+            <!-- RELEASES -->
+
+            <section
+                id="releases"
+                class="section"
+            >
+
+                <h1 class="section-title">
+                    My Releases
+                </h1>
+
+                <p class="section-subtitle">
+                    Your uploaded music.
+                </p>
+
+                <div
+                    id="releaseList"
+                    class="release-list"
+                ></div>
+
+            </section>
+
+
+            <!-- STATISTICS -->
+
+            <section
+                id="statistics"
+                class="section"
+            >
+
+                <h1 class="section-title">
+                    Statistics
+                </h1>
+
+                <p class="section-subtitle">
+                    Your release statistics.
+                </p>
+
+                <div class="cards">
+
+                    <div class="card">
+                        <div class="card-label">
+                            Total Releases
+                        </div>
+
+                        <div
+                            id="statTotal"
+                            class="card-number"
+                        >
+                            0
+                        </div>
+                    </div>
+
+                    <div class="card">
+                        <div class="card-label">
+                            Draft
+                        </div>
+
+                        <div
+                            id="statDraft"
+                            class="card-number"
+                        >
+                            0
+                        </div>
+                    </div>
+
+                    <div class="card">
+                        <div class="card-label">
+                            Published
+                        </div>
+
+                        <div
+                            id="statPublished"
+                            class="card-number"
+                        >
+                            0
+                        </div>
+                    </div>
+
+                </div>
+
+            </section>
+
+
+            <!-- ROYALTIES -->
+
+            <section
+                id="royalties"
+                class="section"
+            >
+
+                <h1 class="section-title">
+                    Royalties
+                </h1>
+
+                <p class="section-subtitle">
+                    Royalty information will appear here.
+                </p>
+
+                <div class="card">
+
+                    <h2>
+                        $0.00
+                    </h2>
+
+                    <p style="color:#777;margin-top:8px;">
+                        Current royalties
+                    </p>
+
+                </div>
+
+            </section>
+
+
+            <!-- PROFILE -->
+
+            <section
+                id="profile"
+                class="section"
+            >
+
+                <h1 class="section-title">
+                    Artist Profile
+                </h1>
+
+                <p class="section-subtitle">
+                    Your MIC POWER account.
+                </p>
+
+                <div class="profile">
+
+                    <div class="profile-item">
+
+                        <div class="profile-label">
+                            Artist Name
+                        </div>
+
+                        <div
+                            id="profileArtist"
+                            class="profile-value"
+                        >
+                            -
+                        </div>
+
+                    </div>
+
+
+                    <div class="profile-item">
+
+                        <div class="profile-label">
+                            Email
+                        </div>
+
+                        <div
+                            id="profileEmail"
+                            class="profile-value"
+                        >
+                            -
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </section>
+
+        </main>
+
+    </div>
+
+</div>
+
+
+<script>
+
+/* ==========================================
+   SUPABASE
+========================================== */
+
+const SUPABASE_URL =
+    "https://mzfmdorxrwaerehzyunq.supabase.co";
+
+
+const SUPABASE_PUBLISHABLE_KEY =
+   "sb_publishable_OqE0Ang9KUs9-ky_PtWhow_KLdbvWD6";
+
+
+const supabaseClient =
+    window.supabase.createClient(
+        SUPABASE_URL,
+        SUPABASE_PUBLISHABLE_KEY
+    );
+
+console.log("MIC POWER Supabase loaded");
+
+
+/* ==========================================
+   SHOW LOGIN
+========================================== */
+
+function showLogin(){
+
+    document
+        .getElementById("loginBox")
+        .classList.remove("hidden");
+
+    document
+        .getElementById("signupBox")
+        .classList.add("hidden");
+
+}
+
+
+/* ==========================================
+   SHOW SIGNUP
+========================================== */
+
+function showSignup(){
+
+    document
+        .getElementById("loginBox")
+        .classList.add("hidden");
+
+    document
+        .getElementById("signupBox")
+        .classList.remove("hidden");
+
+}
+
+
+/* ==========================================
+   CREATE ACCOUNT
+========================================== */
+
+async function createAccount(){
+
+    const artist =
+        document
+            .getElementById("artistName")
+            .value
+            .trim();
+
+    const email =
+        document
+            .getElementById("signupEmail")
+            .value
+            .trim();
+
+    const password =
+        document
+            .getElementById("signupPassword")
+            .value;
+
+    const confirm =
+        document
+            .getElementById("confirmPassword")
+            .value;
+
+    const message =
+        document
+            .getElementById("signupMessage");
+
+
+    if(!artist || !email || !password){
+
+        message.innerHTML =
+            "⚠️ Please complete all fields.";
+
+        return;
+    }
+
+
+    if(password !== confirm){
+
+        message.innerHTML =
+            "❌ Passwords do not match.";
+
+        return;
+    }
+
+
+    message.innerHTML =
+        "⏳ Creating account...";
+
+
+    try{
+
+        const {
+            data,
+            error
+        } =
+            await supabaseClient.auth.signUp({
+
+                email:email,
+
+                password:password,
+
+                options:{
+                    data:{
+                        artist_name:artist
+                    }
+                }
+
+            });
+
+
+        if(error){
+
+            throw error;
+
+        }
+
+
+        message.innerHTML =
+            "✅ Account created. Check your email if confirmation is required.";
+
+    }
+    catch(error){
+
+        console.error(error);
+
+        message.innerHTML =
+            "❌ " + error.message;
+
+    }
+
+}
+
+
+/* ==========================================
+   LOGIN
+========================================== */
+
+async function login(){
+
+    const email =
+        document
+            .getElementById("loginEmail")
+            .value
+            .trim();
+
+    const password =
+        document
+            .getElementById("loginPassword")
+            .value;
+
+    const message =
+        document
+            .getElementById("loginMessage");
+
+
+    if(!email || !password){
+
+        message.innerHTML =
+            "⚠️ Enter email and password.";
+
+        return;
+    }
+
+
+    message.innerHTML =
+        "⏳ Logging in...";
+
+
+    try{
+
+        const {
+            data,
+            error
+        } =
+            await supabaseClient.auth.signInWithPassword({
+
+                email:email,
+
+                password:password
+
+            });
+
+
+        if(error){
+
+            throw error;
+
+        }
+
+
+        message.innerHTML =
+            "✅ Login successful.";
+
+        await showDashboard();
+
+    }
+    catch(error){
+
+        console.error(error);
+
+        message.innerHTML =
+            "❌ Login failed: " +
+            error.message;
+
+    }
+
+}
+
+
+/* ==========================================
+   SHOW DASHBOARD
+========================================== */
+
+async function showDashboard(){
+
+    document
+        .getElementById("authPage")
+        .classList.add("hidden");
+
+    document
+        .getElementById("dashboard")
+        .classList.remove("hidden");
+
+
+    const {
+        data:{
+            user
+        }
+    } =
+        await supabaseClient.auth.getUser();
+
+
+    if(!user){
+
+        return;
+
+    }
+
+
+    const artistName =
+        user.user_metadata?.artist_name ||
+        user.email;
+
+
+    document
+        .getElementById("headerArtistName")
+        .textContent =
+        artistName;
+
+
+    document
+        .getElementById("profileArtist")
+        .textContent =
+        artistName;
+
+
+    document
+        .getElementById("profileEmail")
+        .textContent =
+        user.email;
+
+
+    await loadReleases();
+
+    await loadStatistics();
+
+}
+
+
+/* ==========================================
+   OPEN SECTION
+========================================== */
+
+function openSection(
+    section,
+    button
+){
+
+    document
+        .querySelectorAll(".section")
+        .forEach(function(item){
+
+            item.classList.remove("active");
+
+        });
+
+
+    const target =
+        document.getElementById(section);
+
+
+    if(target){
+
+        target.classList.add("active");
+
+    }
+
+
+    document
+        .querySelectorAll(".sidebar button")
+        .forEach(function(item){
+
+            item.classList.remove("active");
+
+        });
+
+
+    if(button){
+
+        button.classList.add("active");
+
+    }
+
+
+    if(section === "releases"){
+
+        loadReleases();
+
+    }
+
+
+    if(section === "statistics"){
+
+        loadStatistics();
+
+    }
+
+}
+
+
+/* ==========================================
+   GET FILE EXTENSION
+========================================== */
+
+function getExtension(filename){
+
+    const parts =
+        filename.split(".");
+
+    return parts.length > 1
+        ? parts.pop().toLowerCase()
+        : "bin";
+
+}
+
+
+/* ==========================================
+   UPLOAD RELEASE
+========================================== */
+
+async function uploadRelease(){
+
+    const message = document.getElementById("uploadMessage");
+
+    const title = document.getElementById("songTitle").value.trim();
+    const artist = document.getElementById("releaseArtist").value.trim();
+    const type = document.getElementById("releaseType").value;
+    const date = document.getElementById("releaseDate").value;
+
+    const audio = document.getElementById("audioFile").files[0];
+    const cover = document.getElementById("coverFile").files[0];
+
+    if(!title || !artist || !audio || !cover){
+        message.innerHTML =
+            "⚠️ Please complete all required fields.";
+        return;
+    }
+
+    message.innerHTML =
+        "⏳ Checking your artist profile...";
+
+    try{
+
+        /* ==========================================
+           GET LOGGED-IN USER
+        ========================================== */
+
+        const {
+            data: {
+                user
+            },
+            error: userError
+        } = await supabaseClient.auth.getUser();
+
+        if(userError){
+            throw userError;
+        }
+
+        if(!user){
+            message.innerHTML =
+                "❌ Please login again.";
+            return;
+        }
+
+
+        /* ==========================================
+           GET ARTIST PROFILE
+        ========================================== */
+
+        const {
+            data: artistProfile,
+            error: artistError
+        } = await supabaseClient
+            .from("artists")
+            .select("id, user_id, artist_name, full_name")
+            .eq("user_id", user.id)
+            .maybeSingle();
+
+        if(artistError){
+            throw artistError;
+        }
+
+        if(!artistProfile){
+
+            message.innerHTML =
+                "❌ Artist profile not found.";
+
+            return;
+        }
+
+
+        /* ==========================================
+           FILE NAMES
+        ========================================== */
+
+        const timestamp = Date.now();
+
+        const safeTitle =
+            title
+                .toLowerCase()
+                .replace(/[^a-z0-9]+/g, "-")
+                .replace(/^-+|-+$/g, "");
+
+        const audioExtension =
+            getExtension(audio.name);
+
+        const coverExtension =
+            getExtension(cover.name);
+
+        const audioPath =
+            user.id +
+            "/" +
+            timestamp +
+            "-" +
+            safeTitle +
+            "." +
+            audioExtension;
+
+        const coverPath =
+            user.id +
+            "/" +
+            timestamp +
+            "-" +
+            safeTitle +
+            "-cover." +
+            coverExtension;
+
+
+        /* ==========================================
+           UPLOAD AUDIO
+        ========================================== */
+
+        message.innerHTML =
+            "⏳ Uploading audio...";
+
+        const audioUpload =
+            await supabaseClient
+                .storage
+                .from("Music")
+                .upload(
+                    audioPath,
+                    audio,
+                    {
+                        cacheControl: "3600",
+                        upsert: false
+                    }
+                );
+
+        if(audioUpload.error){
+            throw audioUpload.error;
+        }
+
+
+        /* ==========================================
+           UPLOAD COVER
+        ========================================== */
+
+        message.innerHTML =
+            "⏳ Uploading cover...";
+
+        const coverUpload =
+            await supabaseClient
+                .storage
+                .from("Music")
+                .upload(
+                    coverPath,
+                    cover,
+                    {
+                        cacheControl: "3600",
+                        upsert: false
+                    }
+                );
+
+        if(coverUpload.error){
+            throw coverUpload.error;
+        }
+
+
+        /* ==========================================
+           GET PUBLIC URLS
+        ========================================== */
+
+        const audioURL =
+            supabaseClient
+                .storage
+                .from("Music")
+                .getPublicUrl(audioPath)
+                .data
+                .publicUrl;
+
+        const coverURL =
+            supabaseClient
+                .storage
+                .from("Music")
+                .getPublicUrl(coverPath)
+                .data
+                .publicUrl;
+
+
+        /* ==========================================
+           SAVE RELEASE
+        ========================================== */
+
+        message.innerHTML =
+            "⏳ Saving release...";
+
+        const releaseData = {
+
+            artist_id: artistProfile.id,
+
+            title: title,
+
+            release_type:
+                type || "Single",
+
+            genre: null,
+
+            language: null,
+
+            release_date:
+                date || null,
+
+            cover_art_url:
+                coverURL,
+
+            copyright_text:
+                null,
+
+            phonogr
+```
+
+
+
+    const {
+        data:{
+            user
+        }
+    } =
+        await supabaseClient.auth.getUser();
+
+
+    if(!user){
+
+        message.innerHTML =
+            "❌ Please login again.";
+
+        return;
+
+    }
+
+
+    message.innerHTML =
+        "⏳ Uploading your release...";
+
+
+    try{
+
+        const timestamp =
+            Date.now();
+
+
+        const safeTitle =
+            title
+                .toLowerCase()
+                .replace(/[^a-z0-9]+/g,"-")
+                .replace(/^-+|-+$/g,"");
+
+
+        const audioPath =
+            user.id +
+            "/" +
+            timestamp +
+            "-" +
+            safeTitle +
+            "." +
+            getExtension(audio.name);
+
+
+        const coverPath =
+            user.id +
+            "/" +
+            timestamp +
+            "-" +
+            safeTitle +
+            "-cover." +
+            getExtension(cover.name);
+
+
+        /* AUDIO */
+
+        const audioUpload =
+            await supabaseClient.storage
+                .from("Music")
+                .upload(
+                    audioPath,
+                    audio,
+                    {
+                        cacheControl:"3600",
+                        upsert:false
+                    }
+                );
+
+
+        if(audioUpload.error){
+
+            throw audioUpload.error;
+
+        }
+
+
+        /* COVER */
+
+        const coverUpload =
+            await supabaseClient.storage
+                .from("Music")
+                .upload(
+                    coverPath,
+                    cover,
+                    {
+                        cacheControl:"3600",
+                        upsert:false
+                    }
+                );
+
+
+        if(coverUpload.error){
+
+            throw coverUpload.error;
+
+        }
+
+
+        /* PUBLIC URLS */
+
+        const audioURL =
+            supabaseClient.storage
+                .from("Music")
+                .getPublicUrl(audioPath)
+                .data
+                .publicUrl;
+
+
+        const coverURL =
+            supabaseClient.storage
+                .from("Music")
+                .getPublicUrl(coverPath)
+                .data
+                .publicUrl;
+
+
+        /* RELEASE DATA */
+
+        const releaseData = {
+
+            artist_id:user.id,
+
+            title:title,
+
+            release_type:type || "Single",
+
+            genre:null,
+
+            language:null,
+
+            release_date:date || null,
+
+            cover_art_url:coverURL,
+
+            copyright_text:null,
+
+            phonographic_copyright:null,
+
+            status:"Draft",
+
+            user_id:user.id,
+
+            artist_name:artist,
+
+            song_title:title,
+
+            audio_url:audioURL,
+
+            cover_url:coverURL
+
+        };
+
+
+        console.log(
+            "MIC POWER RELEASE DATA:",
+            releaseData
+        );
+
+
+        /* DATABASE */
+
+        const {
+            data:savedRelease,
+            error:databaseError
+        } =
+            await supabaseClient
+                .from("releases")
+                .insert(releaseData)
+                .select()
+                .single();
+
+
+        if(databaseError){
+
+            console.error(
+                "DATABASE ERROR:",
+                databaseError
+            );
+
+            throw databaseError;
+
+        }
+
+
+        console.log(
+            "RELEASE SAVED:",
+            savedRelease
+        );
+
+
+        message.innerHTML =
+            "✅ Release uploaded successfully!";
+
+
+        /* CLEAR FORM */
+
+        document
+            .getElementById("songTitle")
+            .value = "";
+
+
+        document
+            .getElementById("releaseDate")
+            .value = "";
+
+
+        document
+            .getElementById("coverFile")
+            .value = "";
+
+
+        document
+            .getElementById("audioFile")
+            .value = "";
+
+
+        await loadReleases();
+
+        await loadStatistics();
+
+    }
+    catch(error){
+
+        console.error(error);
+
+        message.innerHTML =
+            "❌ Upload failed: " +
+            error.message;
+
+    }
+
+}
+
+
+/* ==========================================
+   LOAD RELEASES
+========================================== */
+
+async function submitRelease(releaseId){
+
+    try{
+
+        const {
+            data: {
+                user
+            },
+            error: userError
+        } = await supabaseClient.auth.getUser();
+
+        if(userError){
+            throw userError;
+        }
+
+        if(!user){
+
+            alert(
+                "❌ Please login again."
+            );
+
+            return;
+        }
+
+        const {
+            data: release,
+            error: releaseError
+        } = await supabaseClient
+            .from("releases")
+            .select("id, status, user_id, title")
+            .eq("id", releaseId)
+            .eq("user_id", user.id)
+            .maybeSingle();
+
+        if(releaseError){
+            throw releaseError;
+        }
+
+        if(!release){
+
+            alert(
+                "❌ Release not found."
+            );
+
+            return;
+        }
+
+        if(release.status !== "Draft"){
+
+            alert(
+                "⚠️ This release has already been submitted."
+            );
+
+            return;
+        }
+
+        const confirmed =
+            confirm(
+                "Submit this release for review?"
+            );
+
+        if(!confirmed){
+            return;
+        }
+
+        const {
+            error: updateError
+        } = await supabaseClient
+            .from("releases")
+            .update({
+
+                status: "Submitted",
+
+                updated_at:
+                    new Date().toISOString()
+
+            })
+            .eq("id", releaseId)
+            .eq("user_id", user.id);
+
+        if(updateError){
+            throw updateError;
+        }
+
+        alert(
+            "✅ Release submitted for review!"
+        );
+
+        await loadReleases();
+
+        if(typeof loadStatistics === "function"){
+            await loadStatistics();
+        }
+
+    }
+    catch(error){
+
+        console.error(
+            "MIC POWER SUBMIT ERROR:",
+            error
+        );
+
+        alert(
+            "❌ Submit failed: " +
+            error.message
+        );
+    }
+
+
+
+    list.innerHTML =
+        '<div class="empty">Loading releases...</div>';
+
+
+    const {
+        data,
+        error
+    } =
+        await supabaseClient
+            .from("releases")
+            .select("*")
+            .eq("user_id",user.id)
+            .order("created_at",{
+                ascending:false
+            });
+
+
+    if(error){
+
+        console.error(error);
+
+        list.innerHTML =
+            '<div class="empty">Unable to load releases.</div>';
+
+        return;
+
+    }
+
+
+    if(!data || data.length === 0){
+
+        list.innerHTML =
+            '<div class="empty">You have no releases yet.</div>';
+
+        return;
+
+    }
+
+
+    list.innerHTML = "";
+
+
+    data.forEach(function(release){
+
+        const cover =
+            release.cover_url ||
+            release.cover_art_url ||
+            "";
+
+
+        const title =
+            release.song_title ||
+            release.title ||
+            "Untitled";
+
+
+        const artist =
+            release.artist_name ||
+            "";
+
+
+        const status =
+            release.status ||
+            "Draft";
+
+
+        const date =
+            release.release_date ||
+            "No release date";
+
+
+        const item =
+            document.createElement("div");
+
+
+        item.className =
+            "release";
+
+
+        item.innerHTML = `
+
+            ${
+                cover
+                ?
+                `<img
+                    class="release-cover"
+                    src="${escapeHTML(cover)}"
+                    alt="Cover"
+                >`
+                :
+                `<div class="release-cover"></div>`
+            }
+
+            <div class="release-info">
+
+                <div class="release-title">
+                    ${escapeHTML(title)}
+                </div>
+
+                <div class="release-meta">
+                    ${escapeHTML(artist)}
+                    •
+                    ${escapeHTML(release.release_type || "Single")}
+                    •
+                    ${escapeHTML(date)}
+                </div>
+
+            </div>
+
+            <div class="status">
+                ${escapeHTML(status)}
+            </div>
+        `;
+
+
+        list.appendChild(item);
+
+    });
+
+}
+
+
+/* ==========================================
+   LOAD STATISTICS
+========================================== */
+
+async function loadStatistics(){
+
+    const {
+        data:{
+            user
+        }
+    } =
+        await supabaseClient.auth.getUser();
+
+
+    if(!user){
+
+        return;
+
+    }
+
+
+    const {
+        data,
+        error
+    } =
+        await supabaseClient
+            .from("releases")
+            .select("status")
+            .eq("user_id",user.id);
+
+
+    if(error){
+
+        console.error(error);
+
+        return;
+
+    }
+
+
+    const releases =
+        data || [];
+
+
+    const total =
+        releases.length;
+
+
+    const draft =
+        releases.filter(function(item){
+
+            return item.status === "Draft";
+
+        }).length;
+
+
+    const published =
+        releases.filter(function(item){
+
+            return item.status === "Published";
+
+        }).length;
+
+
+    document
+        .getElementById("totalReleases")
+        .textContent =
+        total;
+
+
+    document
+        .getElementById("draftReleases")
+        .textContent =
+        draft;
+
+
+    document
+        .getElementById("publishedReleases")
+        .textContent =
+        published;
+
+
+    document
+        .getElementById("statTotal")
+        .textContent =
+        total;
+
+
+    document
+        .getElementById("statDraft")
+        .textContent =
+        draft;
+
+
+    document
+        .getElementById("statPublished")
+        .textContent =
+        published;
+
+}
+
+
+/* ==========================================
+   ESCAPE HTML
+========================================== */
+
+function escapeHTML(value){
+
+    if(value === null || value === undefined){
+
+        return "";
+
+    }
+
+
+    return String(value)
+        .replace(/&/g,"&amp;")
+        .replace(/</g,"&lt;")
+        .replace(/>/g,"&gt;")
+        .replace(/"/g,"&quot;")
+        .replace(/'/g,"&#039;");
+
+}
+
+
+/* ==========================================
+   LOGOUT
+========================================== */
+
+async function logout(){
+
+    await supabaseClient.auth.signOut();
+
+
+    document
+        .getElementById("dashboard")
+        .classList.add("hidden");
+
+
+    document
+        .getElementById("authPage")
+        .classList.remove("hidden");
+
+
+    document
+        .getElementById("loginEmail")
+        .value = "";
+
+
+    document
+        .getElementById("loginPassword")
+        .value = "";
+
+
+    showLogin();
+
+}
+
+
+/* ==========================================
+   CHECK EXISTING SESSION
+========================================== */
+
+async function checkSession(){
+
+    const {
+        data:{
+            session
+        }
+    } =
+        await supabaseClient.auth.getSession();
+
+
+    if(session){
+
+        await showDashboard();
+
+    }
+
+}
+
+
+/* ==========================================
+   START MIC POWER
+========================================== */
+
+window.addEventListener(
+    "load",
+    function(){
+
+        checkSession();
+
+    }
+);
+
+</script>
+
+</body>
+</html>
+```
