@@ -3058,45 +3058,68 @@ async function startDistribution(
 
 /* ============================================================
    SELECT SUBSCRIPTION PLAN
-   NEW CHECKOUT FLOW
+   CLICKPESA HOSTED CHECKOUT
 ============================================================ */
 
-async function selectPlan(
-    planCode
-){
+async function selectPlan(planCode){
 
     if(!currentUser){
 
-        alert(
-            "Please login first."
-        );
+        alert("Please login first.");
 
         return;
 
     }
 
     const message =
-        document.getElementById(
-            "planMessage"
-        );
+        document.getElementById("planMessage");
 
     if(message){
 
-        message.className =
-            "message";
+        message.className = "message";
 
         message.textContent =
-            "Preparing secure checkout...";
+            "Preparing ClickPesa secure checkout...";
 
     }
 
     try{
 
+        /*
+         * Get the user's current Supabase session.
+         * The ClickPesa Edge Function requires
+         * the logged-in user's access token.
+         */
+
+        const sessionResult =
+            await supabaseClient
+                .auth
+                .getSession();
+
+        if(sessionResult.error){
+
+            throw sessionResult.error;
+
+        }
+
+        const session =
+            sessionResult.data.session;
+
+        if(!session){
+
+            throw new Error(
+                "Your login session has expired. Please login again."
+            );
+
+        }
+
+        /*
+         * Get the selected plan from Supabase.
+         */
+
         const planResult =
             await supabaseClient
-                .from(
-                    "subscription_plans"
-                )
+                .from("subscription_plans")
                 .select(
                     "id, plan_code, plan_name, price, currency, duration_days"
                 )
@@ -3107,7 +3130,9 @@ async function selectPlan(
                 .maybeSingle();
 
         if(planResult.error){
+
             throw planResult.error;
+
         }
 
         const plan =
@@ -3122,35 +3147,48 @@ async function selectPlan(
         }
 
         /*
+         * Customer information.
+         *
+         * We already have the user's email from Supabase.
+         * Phone is optional here because the current
+         * account form does not yet collect a phone number.
+         */
+
+        const customerName =
+            currentUser.user_metadata &&
+            currentUser.user_metadata.artist_name
+            ? currentUser.user_metadata.artist_name
+            : "MIC POWER Artist";
+
+        const customerEmail =
+            currentUser.email || "";
+
+        /*
+         * Call the new ClickPesa checkout Edge Function.
+         *
          * IMPORTANT:
+         * We do NOT put ClickPesa API keys here.
          *
-         * We no longer call:
-         *
-         * create_subscription_payment
-         *
-         * and we no longer create a Manual payment here.
-         *
-         * The request now goes to the Edge Function:
-         *
-         * hyper-worker
-         *
-         * That function authenticates the user,
-         * looks up the real plan price server-side,
-         * and creates a Pending payment record.
+         * The secret credentials remain inside Supabase.
          */
 
         const checkout =
             await supabaseClient
                 .functions
                 .invoke(
-                    "hyper-worker",
+                    "clickpesa-checkout",
                     {
                         body:{
+
                             plan_code:
                                 plan.plan_code,
 
-                            payment_method:
-                                "CARD"
+                            customerName:
+                                customerName,
+
+                            customerEmail:
+                                customerEmail
+
                         }
                     }
                 );
@@ -3158,7 +3196,7 @@ async function selectPlan(
         if(checkout.error){
 
             console.error(
-                "Checkout function error:",
+                "ClickPesa checkout error:",
                 checkout.error
             );
 
@@ -3176,27 +3214,36 @@ async function selectPlan(
 
             throw new Error(
                 checkoutData &&
-                checkoutData.error
-                ? checkoutData.error
-                : "Unable to create checkout session."
+                (
+                    checkoutData.message ||
+                    checkoutData.error
+                )
+                ? (
+                    checkoutData.message ||
+                    checkoutData.error
+                )
+                : "Unable to create ClickPesa checkout."
             );
 
         }
+
+        /*
+         * Display checkout information before redirect.
+         */
 
         if(message){
 
             message.className =
                 "info-box";
 
-            message.innerHTML =
-                `
+            message.innerHTML = `
 
                 <div class="checkout-box">
 
                     <div class="checkout-title">
 
                         ${escapeHTML(
-                            checkoutData.plan_name ||
+                            checkoutData.planName ||
                             plan.plan_name
                         )}
 
@@ -3204,72 +3251,133 @@ async function selectPlan(
 
                     <div class="meta">
 
-                        Amount:
-                        ${escapeHTML(
-                            checkoutData.amount
+                        MIC POWER Price:
+                        $${escapeHTML(
+                            checkoutData.amountUSD
                         )}
-                        ${escapeHTML(
-                            checkoutData.currency
-                        )}
+
+                        USD
 
                     </div>
 
                     <div class="meta">
 
-                        Payment Method:
+                        ClickPesa Amount:
                         ${escapeHTML(
-                            checkoutData.payment_method
+                            Number(
+                                checkoutData.amountTZS || 0
+                            ).toLocaleString()
                         )}
+
+                        TZS
 
                     </div>
 
                     <div class="meta">
 
-                        Payment Status:
-                        ${statusBadge(
-                            checkoutData.status
+                        Exchange Rate:
+                        ${escapeHTML(
+                            checkoutData.exchangeRate
                         )}
+
+                        TZS / USD
+
+                    </div>
+
+                    <div class="meta">
+
+                        Payment Provider:
+                        ClickPesa
 
                     </div>
 
                     <div class="checkout-reference">
 
                         <strong>
-                            Checkout Reference
+                            Order Reference
                         </strong>
 
                         <br>
 
                         ${escapeHTML(
-                            checkoutData.checkout_reference
+                            checkoutData.orderReference
                         )}
 
                     </div>
 
-                    <div class="info-box">
+                    <br>
 
-                        Checkout session created successfully.
-                        No payment has been received yet.
-
-                        <br><br>
-
-                        The real payment gateway will be connected
-                        to this checkout session in the next step.
-
-                    </div>
+                    <button
+                        class="primary"
+                        type="button"
+                        id="continueClickPesaBtn"
+                    >
+                        Continue to ClickPesa
+                    </button>
 
                 </div>
 
-                `;
+            `;
+
+            const continueButton =
+                document.getElementById(
+                    "continueClickPesaBtn"
+                );
+
+            if(continueButton){
+
+                continueButton.addEventListener(
+                    "click",
+                    function(){
+
+                        if(
+                            checkoutData.checkoutLink
+                        ){
+
+                            window.location.href =
+                                checkoutData.checkoutLink;
+
+                        }else{
+
+                            alert(
+                                "ClickPesa checkout link was not returned."
+                            );
+
+                        }
+
+                    }
+                );
+
+            }
+
+        }else{
+
+            /*
+             * Fallback if the message element
+             * is not available.
+             */
+
+            if(
+                checkoutData.checkoutLink
+            ){
+
+                window.location.href =
+                    checkoutData.checkoutLink;
+
+            }
 
         }
+
+        /*
+         * Refresh payment records.
+         */
 
         await loadPayments();
 
     }catch(error){
 
         console.error(
-            "Checkout creation error:",
+            "ClickPesa checkout creation error:",
             error
         );
 
@@ -3280,16 +3388,16 @@ async function selectPlan(
 
             message.textContent =
                 "Checkout failed: " +
-                error.message;
+                (
+                    error.message ||
+                    "Unknown error"
+                );
 
         }
 
     }
 
-}
-
-
-/* ============================================================
+}/* ============================================================
    PAYMENTS - ARTIST
 ============================================================ */
 
